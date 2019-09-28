@@ -1,0 +1,15 @@
+cmake_minimum_required (VERSION 3.10)
+
+project (gorpho-download NONE)
+
+include (ExternalProject)
+ExternalProject_Add (gorpho
+	GIT_REPOSITORY    https://github.com/patmjen/gorpho.git
+	GIT_TAG           master
+	SOURCE_DIR        "${CMAKE_CURRENT_BINARY_DIR}/gorpho-src"
+	BINARY_DIR        "${CMAKE_CURRENT_BINARY_DIR}/gorpho-build"
+	CONFIGURE_COMMAND ""
+	BUILD_COMMAND     ""
+	INSTALL_COMMAND   ""
+	TEST_COMMAND      ""
+)
