@@ -3,4 +3,4 @@ from . import gen
 from . import flat
 from . import strel
 
-__all__ = ['gen', 'flatlin', 'strel', 'constants']
+__all__ = ['gen', 'flat', 'strel', 'constants']
