@@ -5,7 +5,7 @@ import numpy as np
 from . import _thin
 from . import constants
 
-def lin_dilate_erode(vol, lineSteps, lineLens, op, blockSize=[256,256,512]):
+def linear_dilate_erode(vol, lineSteps, lineLens, op, blockSize=[256,256,512]):
     assert (op == constants.DILATE or op == constants.ERODE)
 
     # Recast inputs to correct datatype
@@ -20,7 +20,7 @@ def lin_dilate_erode(vol, lineSteps, lineLens, op, blockSize=[256,256,512]):
     volSize = vol.shape
     res = np.empty(volSize, dtype=vol.dtype)
 
-    ret = _thin.flat_linear_linear_dilate_erode_impl(
+    ret = _thin.flat_linear_dilate_erode_impl(
         res.ctypes.data, vol.ctypes.data, lineSteps, lineLens,
         volSize[2], volSize[1], volSize[0],
         lineLens.shape[0],
@@ -31,9 +31,9 @@ def lin_dilate_erode(vol, lineSteps, lineLens, op, blockSize=[256,256,512]):
     return np.resize(res, old_shape)
 
 
-def lin_dilate(vol, lineSteps, lineLens, blockSize=[256,256,512]):
+def linear_dilate(vol, lineSteps, lineLens, blockSize=[256,256,512]):
     linear_dilate_erode(vol, lineSteps, lineLens, constants.DILATE, blockSize)
 
 
-def lin_erode(vol, lineSteps, lineLens, blockSize=[256,256,512]):
+def linear_erode(vol, lineSteps, lineLens, blockSize=[256,256,512]):
     linear_dilate_erode(vol, lineSteps, lineLens, constants.ERODE, blockSize)
