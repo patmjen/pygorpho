@@ -6,7 +6,7 @@
 
 #ifdef _WIN32
 #    define PYGORPHO_API __declspec(dllexport)
-#elif
+#else
 #    define PYGORPHO_API
 #endif
 

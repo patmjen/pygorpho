@@ -25,10 +25,10 @@ def dilate_erode(vol, strel, op, blockSize=[256,256,256]):
 
     return np.resize(res, old_shape)
 
-    
+
 def dilate(vol, strel, blockSize=[256,256,256]):
-    return gen_dilate_erode(vol, strel, constants.DILATE, blockSize)
+    return dilate_erode(vol, strel, constants.DILATE, blockSize)
 
 
 def erode(vol, strel, blockSize=[256,256,256]):
-    return gen_dilate_erode(vol, strel, constants.ERODE, blockSize)
+    return dilate_erode(vol, strel, constants.ERODE, blockSize)
