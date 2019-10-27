@@ -32,8 +32,8 @@ def linear_dilate_erode(vol, lineSteps, lineLens, op, blockSize=[256,256,512]):
 
 
 def linear_dilate(vol, lineSteps, lineLens, blockSize=[256,256,512]):
-    linear_dilate_erode(vol, lineSteps, lineLens, constants.DILATE, blockSize)
+    return linear_dilate_erode(vol, lineSteps, lineLens, constants.DILATE, blockSize)
 
 
 def linear_erode(vol, lineSteps, lineLens, blockSize=[256,256,512]):
-    linear_dilate_erode(vol, lineSteps, lineLens, constants.ERODE, blockSize)
+    return linear_dilate_erode(vol, lineSteps, lineLens, constants.ERODE, blockSize)
