@@ -1,5 +1,5 @@
 """
-Thin wrappers for internal use
+Thin wrappers to C bindings for gorpho. Only meant for internal use.
 """
 import ctypes
 import os
@@ -9,6 +9,24 @@ import platform
 
 # Load the shared library
 def try_lib_load():
+    """
+    Try to load dynamic library with gorpho C bindings.
+
+    Looks for the pygorpho shared library (eg. a .dll or .so) and loads it.
+    The directory _thin.py is located in is searched as well as the parent
+    directory. If PYGORPHO_PATH is set, this location is also searched.
+
+    Returns
+    -------
+    (library, path)
+        Tuple with library object return by numpy.ctypes.load_library and the
+        path to the library.
+
+    Raises
+    ------
+    ImportError
+        If the dynamic library file could not be found.
+    """
     path_candidates = []
     # If PYGORPHO_PATH was set we start looking there
     if os.getenv('PYGORPHO_PATH') is not None:
@@ -39,6 +57,21 @@ DILATE = PYGORPHO_LIB.pyDilateOp()
 ERODE = PYGORPHO_LIB.pyErodeOp()
 
 def raise_on_error(error_code):
+    """
+    Raise appropriate exception if error code is not 0
+
+    Parameters
+    ----------
+    error_code
+        Error code returned by C bindings to gorpho. See pygorpho.cuh.
+
+    Raises
+    ------
+    ValueError
+        If error_code is 1, 2 or an unknown value.
+    RuntimeError
+        If error_code is 3
+    """
     if error_code == 0: # SUCCESS
         return
     elif error_code == 1: # ERR_BAD_MORPH_OP

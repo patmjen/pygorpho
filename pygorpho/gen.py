@@ -1,8 +1,32 @@
+"""Mathematical morphology with general (grayscale) structuring elements."""
+
 import numpy as np
 from . import _thin
 from . import constants
 
 def dilate_erode(vol, strel, op, blockSize=[256,256,256]):
+    """
+    Dilation/erodsion with general structuring element.
+
+    Parameters
+    ----------
+    vol
+        Volume to dilate/erode. Must be convertible to numpy array of at most
+        3 dimensions.
+    strel
+        Structuring element.  Must be convertible to numpy array of at most 3
+        dimensions.
+    op
+        Operation to perform. Must be either DILATE or ERODE from constants.
+    blockSize
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of dilation/erosion.
+    """
     assert (op == constants.DILATE or op == constants.ERODE)
 
     # Recast inputs to correct datatype
@@ -27,8 +51,48 @@ def dilate_erode(vol, strel, op, blockSize=[256,256,256]):
 
 
 def dilate(vol, strel, blockSize=[256,256,256]):
+    """
+    Dilation/erodsion with general structuring element.
+
+    Parameters
+    ----------
+    vol
+        Volume to dilate/erode. Must be convertible to numpy array of at most
+        3 dimensions.
+    strel
+        Structuring element.  Must be convertible to numpy array of at most 3
+        dimensions.
+    blockSize
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of dilation/erosion.
+    """
     return dilate_erode(vol, strel, constants.DILATE, blockSize)
 
 
 def erode(vol, strel, blockSize=[256,256,256]):
+    """
+    Dilation/erodsion with general structuring element.
+
+    Parameters
+    ----------
+    vol
+        Volume to dilate/erode. Must be convertible to numpy array of at most
+        3 dimensions.
+    strel
+        Structuring element.  Must be convertible to numpy array of at most 3
+        dimensions.
+    blockSize
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of dilation/erosion.
+    """
     return dilate_erode(vol, strel, constants.ERODE, blockSize)
