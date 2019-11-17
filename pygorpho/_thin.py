@@ -109,6 +109,24 @@ gen_dilate_erode_impl.argtypes = [
     ctypes.c_int,    # blockZ
 ]
 
+flat_dilate_erode_impl = PYGORPHO_LIB.pyFlatDilateErode
+flat_dilate_erode_impl.argtypes = [
+    ctypes.c_void_p,                               # res
+    ctypes.c_void_p,                               # vol
+    ctl.ndpointer(dtype=np.dtype('?'), flags='C'), # strel
+    ctypes.c_int,                                  # volX
+    ctypes.c_int,                                  # volY
+    ctypes.c_int,                                  # volZ
+    ctypes.c_int,                                  # strelX
+    ctypes.c_int,                                  # strelY
+    ctypes.c_int,                                  # strelZ
+    ctypes.c_int,                                  # type
+    ctypes.c_int,                                  # op
+    ctypes.c_int,                                  # blockX
+    ctypes.c_int,                                  # blockY
+    ctypes.c_int,                                  # blockZ
+]
+
 flat_linear_dilate_erode_impl = PYGORPHO_LIB.pyFlatLinearDilateErode
 flat_linear_dilate_erode_impl.argtypes = [
     ctypes.c_void_p,                          # res

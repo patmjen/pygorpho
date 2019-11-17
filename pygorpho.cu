@@ -1,5 +1,6 @@
 #include "pygorpho.cuh"
 #include "general_morph.cuh"
+#include "flat_morph.cuh"
 #include "flat_linear_morph.cuh"
 #include "strel.cuh"
 #include "view.cuh"
@@ -22,7 +23,24 @@ void doGenDilateErode(void *resPtr, const void *volPtr, const void *strelPtr, in
 }
 
 template <class Ty>
-void doFlatLinearDilateErode(void *resPtr, const void *volPtr, const int *lineStepsPtr, 
+void doFlatDilateErode(void *resPtr, const void *volPtr, const bool *strelPtr, int3 volSize, int3 strelSize,
+    int op, int3 blockSize)
+{
+    gpho::HostView<Ty> res(static_cast<Ty *>(resPtr), volSize);
+    gpho::HostView<const Ty> vol(static_cast<const Ty *>(volPtr), volSize);
+    gpho::HostView<const bool> strel(strelPtr, strelSize);
+
+    if (op == MOP_DILATE) {
+        gpho::flatDilate(res, vol, strel, blockSize);
+    } else if (op == MOP_ERODE) {
+        gpho::flatErode(res, vol, strel, blockSize);
+    } else {
+        throw ERR_BAD_MORPH_OP;
+    }
+}
+
+template <class Ty>
+void doFlatLinearDilateErode(void *resPtr, const void *volPtr, const int *lineStepsPtr,
     const int *lineLensPtr, int3 volSize, int numLines, int op, int3 blockSize)
 {
     std::vector<gpho::LineSeg> lines;
@@ -35,7 +53,7 @@ void doFlatLinearDilateErode(void *resPtr, const void *volPtr, const int *lineSt
         );
         lines.push_back(gpho::LineSeg(step, lineLensPtr[i]));
     }
-    
+
     gpho::HostView<Ty> res(static_cast<Ty *>(resPtr), volSize);
     gpho::HostView<const Ty> vol(static_cast<const Ty *>(volPtr), volSize);
 
@@ -73,8 +91,8 @@ PYGORPHO_API int pyFlatBallApproxStrel(int *lineSteps, int *lineLens, int radius
     return SUCCESS;
 }
 
-PYGORPHO_API int pyGenDilateErode(void *res, const void *vol, const void *strel, 
-    int volX, int volY, int volZ, int strelX, int strelY, int strelZ, int type, int op, 
+PYGORPHO_API int pyGenDilateErode(void *res, const void *vol, const void *strel,
+    int volX, int volY, int volZ, int strelX, int strelY, int strelZ, int type, int op,
     int blockX, int blockY, int blockZ)
 {
     int3 volSize = make_int3(volX, volY, volZ);
@@ -86,14 +104,27 @@ PYGORPHO_API int pyGenDilateErode(void *res, const void *vol, const void *strel,
     return SUCCESS;
 }
 
+PYGORPHO_API int pyFlatDilateErode(void *res, const void *vol, const bool *strel,
+    int volX, int volY, int volZ, int strelX, int strelY, int strelZ, int type, int op,
+    int blockX, int blockY, int blockZ)
+{
+    int3 volSize = make_int3(volX, volY, volZ);
+    int3 strelSize = make_int3(strelX, strelY, strelZ);
+    int3 blockSize = make_int3(blockX, blockY, blockZ);
+    TRY_OR_RETURN_ERROR(
+        typeDispatch(type, doFlatDilateErode, res, vol, strel, volSize, strelSize, op, blockSize);
+    )
+    return SUCCESS;
+}
+
 PYGORPHO_API int pyFlatLinearDilateErode(void *res, const void *vol, const int *lineSteps,
-    const int *lineLens, int volX, int volY, int volZ, int numLines, int type, int op, 
+    const int *lineLens, int volX, int volY, int volZ, int numLines, int type, int op,
     int blockX, int blockY, int blockZ)
 {
     int3 volSize = make_int3(volX, volY, volZ);
     int3 blockSize = make_int3(blockX, blockY, blockZ);
     TRY_OR_RETURN_ERROR(
-        typeDispatch(type, doFlatLinearDilateErode, res, vol, lineSteps, 
+        typeDispatch(type, doFlatLinearDilateErode, res, vol, lineSteps,
             lineLens, volSize, numLines, op, blockSize);
     )
     return SUCCESS;
