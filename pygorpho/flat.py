@@ -105,6 +105,8 @@ def linear_dilate_erode(vol, lineSteps, lineLens, op, blockSize=[256,256,512]):
     are parameterized with a (integer) step vector and a length giving the
     number of steps. The operations is the same for all line segments.
 
+    The operations is performed using the van Herk/Gil-Werman algorithm [1,2].
+
     Parameters
     ----------
     vol
@@ -127,6 +129,16 @@ def linear_dilate_erode(vol, lineSteps, lineLens, op, blockSize=[256,256,512]):
     -------
     numpy.array
         Volume of same size as vol with the result of dilation/erosion.
+
+    References
+    ----------
+    [1] M. Van Herk, "A fast algorithm for local minimum and maximum filters
+    on rectangular and octagonal kernels," Pattern Recognition Letters 13.
+    (pp. 517-521). 1992.
+
+    [2] J. Gil and M Werman, "Computing 2-D min, median, and max filters,"
+    IEEE Transactions on Pattern Analysis and Machine Intelligence 24.
+    (pp. 504-507). 1993.
     """
     assert (op == constants.DILATE or op == constants.ERODE)
 
@@ -161,6 +173,8 @@ def linear_dilate(vol, lineSteps, lineLens, blockSize=[256,256,512]):
     parameterized with a (integer) step vector and a length giving the number
     of steps. The operations is the same for all line segments.
 
+    The operations is performed using the van Herk/Gil-Werman algorithm [1,2].
+
     Parameters
     ----------
     vol
@@ -180,6 +194,16 @@ def linear_dilate(vol, lineSteps, lineLens, blockSize=[256,256,512]):
     -------
     numpy.array
         Volume of same size as vol with the result of dilation.
+
+    References
+    ----------
+    [1] M. Van Herk, "A fast algorithm for local minimum and maximum filters
+    on rectangular and octagonal kernels," Pattern Recognition Letters 13.
+    (pp. 517-521). 1992.
+
+    [2] J. Gil and M Werman, "Computing 2-D min, median, and max filters,"
+    IEEE Transactions on Pattern Analysis and Machine Intelligence 24.
+    (pp. 504-507). 1993.
     """
     return linear_dilate_erode(vol, lineSteps, lineLens, constants.DILATE, blockSize)
 
@@ -191,6 +215,8 @@ def linear_erode(vol, lineSteps, lineLens, blockSize=[256,256,512]):
     Erodes volume with a sequence of flat line segments. Line segments are
     parameterized with a (integer) step vector and a length giving the number
     of steps. The operations is the same for all line segments.
+
+    The operations is performed using the van Herk/Gil-Werman algorithm [1,2].
 
     Parameters
     ----------
@@ -211,5 +237,15 @@ def linear_erode(vol, lineSteps, lineLens, blockSize=[256,256,512]):
     -------
     numpy.array
         Volume of same size as vol with the result of erosion.
+
+    References
+    ----------
+    [1] M. Van Herk, "A fast algorithm for local minimum and maximum filters
+    on rectangular and octagonal kernels," Pattern Recognition Letters 13.
+    (pp. 517-521). 1992.
+
+    [2] J. Gil and M Werman, "Computing 2-D min, median, and max filters,"
+    IEEE Transactions on Pattern Analysis and Machine Intelligence 24.
+    (pp. 504-507). 1993.
     """
     return linear_dilate_erode(vol, lineSteps, lineLens, constants.ERODE, blockSize)
