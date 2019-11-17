@@ -6,7 +6,7 @@ from . import constants
 
 def dilate_erode(vol, strel, op, blockSize=[256,256,256]):
     """
-    Dilation/erodsion with general structuring element.
+    Dilation/erosion with general structuring element.
 
     Parameters
     ----------
@@ -52,7 +52,7 @@ def dilate_erode(vol, strel, op, blockSize=[256,256,256]):
 
 def dilate(vol, strel, blockSize=[256,256,256]):
     """
-    Dilation/erodsion with general structuring element.
+    Dilation with general structuring element.
 
     Parameters
     ----------
@@ -76,7 +76,7 @@ def dilate(vol, strel, blockSize=[256,256,256]):
 
 def erode(vol, strel, blockSize=[256,256,256]):
     """
-    Dilation/erodsion with general structuring element.
+    Erosion with general structuring element.
 
     Parameters
     ----------
