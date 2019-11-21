@@ -8,6 +8,8 @@ This is a Python library for fast 3D mathematical morphology using CUDA. Current
 * A van Herk/Gil-Werman implementation for fast dilation/erosion with flat line segments in 3D.
 * Automatic block processing for 3D images which can't fit in GPU memory.
 
+**Documentation** can be found on [readthedocs](https://pygorpho.readthedocs.io)
+
 ## Installation
 First, make sure you have [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) 9.2 or later installed. Also, you must install [NumPy](https://numpy.org/):
 ```
