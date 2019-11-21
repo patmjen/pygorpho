@@ -7,8 +7,7 @@ API Documentation
     :undoc-members:
     :show-inheritance:
 
-Modules
--------
+.. rubric:: **Modules:**
 
 .. toctree::
 
