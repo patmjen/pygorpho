@@ -9,7 +9,7 @@ This is a Python library for fast 3D mathematical morphology using CUDA. Current
 * Automatic block processing for 3D images which can't fit in GPU memory.
 
 ## Installation
-First, make sure you have [CUDA Toolkit 9.2](https://developer.nvidia.com/cuda-toolkit) or later installed. Also, you must install [NumPy](https://numpy.org/):
+First, make sure you have [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) 9.2 or later installed. Also, you must install [NumPy](https://numpy.org/):
 ```
 pip install numpy
 ```
@@ -19,7 +19,7 @@ pip install -i https://test.pypi.org/simple/ pygorpho
 ```
 
 ## Installing from source
-Again, make sure you have [CUDA Toolkit 9.2](https://developer.nvidia.com/cuda-toolkit) or later installed. Also, you need a compatible C++ compiler, which supports C++14. Then, following these instructions should allow you to build and install the package:
+Again, make sure you have [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) 9.2 or later installed. Also, you need a compatible C++ compiler, which supports C++14. Then, following these instructions should allow you to build and install the package:
 
 1. Clone the repo: `git clone https://github.com/patmjen/pygorpho.git`
 2. Change directory: `cd pygorpho`
