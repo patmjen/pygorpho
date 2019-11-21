@@ -6,6 +6,14 @@ import os
 import numpy as np
 import numpy.ctypeslib as ctl
 import platform
+import sys
+
+class DummyFunc:
+    pass
+
+class DummyLib:
+    def __getattr__(self, name):
+        return DummyFunc()
 
 # Load the shared library
 def try_lib_load():
@@ -27,6 +35,13 @@ def try_lib_load():
     ImportError
         If the dynamic library file could not be found.
     """
+    # First, check if sphinx is imported. If yes, we assume that we are building documentation
+    imported_modules = sys.modules.keys()
+    if 'sphinx' in imported_modules:
+        import warnings
+        warnings.warn('Sphinx is imported - we assume documentation is being built and are aborting the import')
+        return DummyLib(), __file__
+
     path_candidates = []
     # If PYGORPHO_PATH was set we start looking there
     if os.getenv('PYGORPHO_PATH') is not None:
@@ -53,8 +68,8 @@ def try_lib_load():
 
 PYGORPHO_LIB, PYGORPHO_PATH = try_lib_load()
 
-DILATE = PYGORPHO_LIB.pyDilateOp()
-ERODE = PYGORPHO_LIB.pyErodeOp()
+DILATE = 0 # Must match MOP_DILATE in pygorpho.cuh
+ERODE = 1 # Must match MOP_ERODE in pygorpho.cuh
 
 def raise_on_error(error_code):
     """
