@@ -1,3 +1,5 @@
+"""Fast 3D mathematical morphology using CUDA."""
+
 from .constants import *
 from . import gen
 from . import flat
