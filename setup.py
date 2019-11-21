@@ -5,7 +5,7 @@ with open('README.md') as readme:
 
 setup(
     name='pygorpho',
-    version='0.1.16',
+    version='0.2.0',
     description='Python bindings for gorpho',
     project_url='https://github.com/patmjen/pygorpho',
     long_description=long_description,
