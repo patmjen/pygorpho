@@ -22,6 +22,7 @@ Features
 
    installation
    api-doc
+   license
 
 Indices and tables
 ==================
