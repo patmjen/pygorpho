@@ -6,7 +6,6 @@ import os
 import numpy as np
 import numpy.ctypeslib as ctl
 import platform
-import sys
 
 class DummyFunc:
     pass
@@ -35,11 +34,11 @@ def try_lib_load():
     ImportError
         If the dynamic library file could not be found.
     """
-    # First, check if sphinx is imported. If yes, we assume that we are building documentation
-    imported_modules = sys.modules.keys()
-    if 'sphinx' in imported_modules:
+    # If we are building the documentation, then we abort the import
+    rtd_build_environ = 'PYGORPHO_BUILD_READTHEDOCS'
+    if rtd_build_environ in os.environ:
         import warnings
-        warnings.warn('Sphinx is imported - we assume documentation is being built and are aborting the import')
+        warnings.warn('Environment variable {} exists - we assume documentation is being built and are aborting the import'.format(rtd_build_environ))
         return DummyLib(), __file__
 
     path_candidates = []
