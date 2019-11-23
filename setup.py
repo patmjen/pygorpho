@@ -5,11 +5,11 @@ with open('README.md') as readme:
 
 setup(
     name='pygorpho',
-    version='0.2.1',
+    version='0.2.2',
     description='Python bindings for gorpho',
     url='https://pygorpho.readthedocs.io/',
     project_urls={
-        'Documentation': 'https://pygorpho.readthedocs.io/',
+        'Documentation': 'https://pygorpho.readthedocs.io/en/latest/api-doc.html',
         'PyPI': 'https://pypi.org/project/pygorpho/',
         'Source': 'https://github.com/patmjen/pygorpho',
     },
