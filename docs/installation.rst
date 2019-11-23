@@ -12,7 +12,7 @@ First, install `NumPy <https://numpy.org/>`_: ::
 
 Then, install with pip: ::
 
-    pip install -i https://test.pypi.org/simple/ pygorpho
+    pip install pygorpho
 
 
 Installing from source
