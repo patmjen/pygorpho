@@ -25,9 +25,9 @@ copyright = '2019, Patrick M. Jensen'
 author = 'Patrick M. Jensen'
 
 # The short X.Y version
-version = ''
+version = '0.2'
 # The full version, including alpha/beta/rc tags
-release = '0.2.0'
+release = '0.2.1'
 
 
 # -- General configuration ---------------------------------------------------

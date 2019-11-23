@@ -5,10 +5,16 @@ with open('README.md') as readme:
 
 setup(
     name='pygorpho',
-    version='0.2.0',
+    version='0.2.1',
     description='Python bindings for gorpho',
-    project_url='https://github.com/patmjen/pygorpho',
+    url='https://pygorpho.readthedocs.io/',
+    project_urls={
+        'Documentation': 'https://pygorpho.readthedocs.io/',
+        'PyPI': 'https://pypi.org/project/pygorpho/',
+        'Source': 'https://github.com/patmjen/pygorpho',
+    },
     long_description=long_description,
+    long_description_content_type='text/markdown',
     license='MIT',
     author='Patrick M. Jensen',
     author_email='patmjen@gmail.com',
