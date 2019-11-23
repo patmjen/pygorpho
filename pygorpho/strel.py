@@ -7,7 +7,7 @@ def flatBallApprox(radius):
     """
     Returns approximation to flat ball of radius using line segments.
 
-    The approximation is constructed according to [1].
+    The approximation is constructed according to [J19]_.
 
     Parameters
     ----------
@@ -22,9 +22,9 @@ def flatBallApprox(radius):
 
     References
     ----------
-    [1] P. M. Jensen et al., "Zonohedral Approximation of Spherical Structuring
-    Element for Volumetric Morphology," Scandinavian Conference on Image
-    Analysis (pp. 128-139). Springer. 2019.
+    .. [J19] P. M. Jensen et al., "Zonohedral Approximation of Spherical
+       Structuring Element for Volumetric Morphology," Scandinavian
+       Conference on Image Analysis (pp. 128-139). Springer. 2019.
     """
     LINE_COUNT = 13
     radius = ctypes.c_int(radius)
