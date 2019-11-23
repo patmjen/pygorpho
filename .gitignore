@@ -1,5 +1,9 @@
+# scikit-build
+_skbuild/
+
 # Visual studio code
 .vs
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
