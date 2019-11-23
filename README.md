@@ -17,7 +17,7 @@ pip install numpy
 ```
 Then, install with pip:
 ```
-pip install -i https://test.pypi.org/simple/ pygorpho
+pip install pygorpho
 ```
 
 ## Installing from source
