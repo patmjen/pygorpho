@@ -82,9 +82,9 @@ def raise_on_error(error_code):
     Raises
     ------
     ValueError
-        If error_code is 1, 2 or an unknown value.
+        If error_code is 1-3 or an unknown value.
     RuntimeError
-        If error_code is 3
+        If error_code is 4-5
     """
     if error_code == 0: # SUCCESS
         return
@@ -94,7 +94,9 @@ def raise_on_error(error_code):
         raise ValueError('invalid type')
     elif error_code == 3: # ERR_BAD_CUDA_DEVICE
         raise ValueError('invalid device number')
-    elif error_code == 3: # ERR_UNCAUGHT_EXCEPTION
+    elif error_code == 4: # ERR_NO_AVAILABLE_CUDA_DEVICE
+        return RuntimeError('no CUDA device available')
+    elif error_code == 5: # ERR_UNCAUGHT_EXCEPTION
         return RuntimeError('an unaught C++ exception occured')
     else:
         raise ValueError('invalid error code: {}'.format(error_code))

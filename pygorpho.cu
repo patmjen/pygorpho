@@ -117,6 +117,7 @@ PYGORPHO_API int pyGenDilateErode(void *res, const void *vol, const void *strel,
     int volX, int volY, int volZ, int strelX, int strelY, int strelZ, int type, int op,
     int blockX, int blockY, int blockZ)
 {
+    if (pyGetDeviceCount() < 1) return ERR_NO_AVAILABLE_CUDA_DEVICE;
     int3 volSize = make_int3(volX, volY, volZ);
     int3 strelSize = make_int3(strelX, strelY, strelZ);
     int3 blockSize = make_int3(blockX, blockY, blockZ);
@@ -130,6 +131,7 @@ PYGORPHO_API int pyFlatDilateErode(void *res, const void *vol, const bool *strel
     int volX, int volY, int volZ, int strelX, int strelY, int strelZ, int type, int op,
     int blockX, int blockY, int blockZ)
 {
+    if (pyGetDeviceCount() < 1) return ERR_NO_AVAILABLE_CUDA_DEVICE;
     int3 volSize = make_int3(volX, volY, volZ);
     int3 strelSize = make_int3(strelX, strelY, strelZ);
     int3 blockSize = make_int3(blockX, blockY, blockZ);
@@ -143,6 +145,7 @@ PYGORPHO_API int pyFlatLinearDilateErode(void *res, const void *vol, const int *
     const int *lineLens, int volX, int volY, int volZ, int numLines, int type, int op,
     int blockX, int blockY, int blockZ)
 {
+    if (pyGetDeviceCount() < 1) return ERR_NO_AVAILABLE_CUDA_DEVICE;
     int3 volSize = make_int3(volX, volY, volZ);
     int3 blockSize = make_int3(blockX, blockY, blockZ);
     TRY_OR_RETURN_ERROR(
