@@ -92,11 +92,21 @@ def raise_on_error(error_code):
         raise ValueError('invalid morhology operation code')
     elif error_code == 2: # ERR_BAD_TYPE
         raise ValueError('invalid type')
+    elif error_code == 3: # ERR_BAD_CUDA_DEVICE
+        raise ValueError('invalid device number')
     elif error_code == 3: # ERR_UNCAUGHT_EXCEPTION
         return RuntimeError('an unaught C++ exception occured')
     else:
         raise ValueError('invalid error code: {}'.format(error_code))
 
+
+get_device_count_impl = PYGORPHO_LIB.pyGetDeviceCount
+
+get_device_name_impl = PYGORPHO_LIB.pyGetDeviceName
+get_device_name_impl.argtypes = [
+    ctypes.c_int,
+    ctypes.c_char_p
+]
 
 flat_ball_approx_impl = PYGORPHO_LIB.pyFlatBallApproxStrel
 flat_ball_approx_impl.argtypes = [

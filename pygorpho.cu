@@ -1,4 +1,7 @@
 #include "pygorpho.cuh"
+
+#include <cstring>
+
 #include "general_morph.cuh"
 #include "flat_morph.cuh"
 #include "flat_linear_morph.cuh"
@@ -72,6 +75,25 @@ extern "C" {
 
 PYGORPHO_API int pyDilateOp() { return MOP_DILATE; };
 PYGORPHO_API int pyErodeOp() { return MOP_ERODE; };
+
+PYGORPHO_API int pyGetDeviceCount()
+{
+    int ndev = 0;
+    cudaGetDeviceCount(&ndev); // It seems like we don't have to check the return value here
+    return ndev;
+}
+
+PYGORPHO_API int pyGetDeviceName(int device, char *nameBuffer)
+{
+    cudaDeviceProp props;
+    if (cudaGetDeviceProperties(&props, device) != cudaSuccess) {
+        return ERR_BAD_CUDA_DEVICE;
+    }
+
+    std::strncpy(nameBuffer, props.name, 256);
+
+    return 0;
+}
 
 PYGORPHO_API int pyFlatBallApproxStrel(int *lineSteps, int *lineLens, int radius)
 {

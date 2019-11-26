@@ -42,7 +42,8 @@ enum ErrorCode : int {
     SUCCESS = 0,
     ERR_BAD_MORPH_OP = 1,
     ERR_BAD_TYPE = 2,
-    ERR_UNCAUGHT_EXCEPTION = 3
+    ERR_BAD_CUDA_DEVICE = 3,
+    ERR_UNCAUGHT_EXCEPTION = 4
 };
 
 enum PyMorphOp : int {
