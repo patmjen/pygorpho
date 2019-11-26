@@ -15,3 +15,4 @@ API Documentation
     modules/gen
     modules/strel
     modules/constants
+    modules/cuda
