@@ -7,12 +7,12 @@ import numpy as np
 import numpy.ctypeslib as ctl
 import platform
 
-class DummyFunc:
+class _DummyFunc:
     pass
 
-class DummyLib:
+class _DummyLib:
     def __getattr__(self, name):
-        return DummyFunc()
+        return _DummyFunc()
 
 # Load the shared library
 def try_lib_load():
@@ -39,7 +39,7 @@ def try_lib_load():
     if rtd_build_environ in os.environ:
         import warnings
         warnings.warn('Environment variable {} exists - we assume documentation is being built and are aborting the import'.format(rtd_build_environ))
-        return DummyLib(), __file__
+        return _DummyLib(), __file__
 
     path_candidates = []
     # If PYGORPHO_PATH was set we start looking there
