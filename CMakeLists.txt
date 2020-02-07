@@ -24,8 +24,8 @@ set (CMAKE_CXX_STANDARD 11)
 
 # Setup pygorpho
 project ("pygorpho" VERSION 0.4.1
-				    DESCRIPTION "Python bindings for gorpho"
-					LANGUAGES "CUDA")
+                    DESCRIPTION "Python bindings for gorpho"
+                    LANGUAGES "CUDA")
 
 add_library (${PROJECT_NAME} SHARED pygorpho.cu)
 target_compile_options (${PROJECT_NAME} PUBLIC "--expt-relaxed-constexpr" "-lineinfo" "--std=c++14")
