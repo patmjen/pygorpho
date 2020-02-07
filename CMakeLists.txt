@@ -23,7 +23,7 @@ add_subdirectory (${CMAKE_CURRENT_BINARY_DIR}/gorpho-src
 set (CMAKE_CXX_STANDARD 11)
 
 # Setup pygorpho
-project ("pygorpho" VERSION 0.4.1
+project ("pygorpho" VERSION 0.4.2
                     DESCRIPTION "Python bindings for gorpho"
                     LANGUAGES "CUDA")
 
