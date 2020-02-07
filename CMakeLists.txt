@@ -22,17 +22,19 @@ add_subdirectory (${CMAKE_CURRENT_BINARY_DIR}/gorpho-src
 
 set (CMAKE_CXX_STANDARD 11)
 
+set (SOURCE_DIR src)
+
 # Setup pygorpho
 project ("pygorpho" VERSION 0.4.2
                     DESCRIPTION "Python bindings for gorpho"
                     LANGUAGES "CUDA")
 
-add_library (${PROJECT_NAME} SHARED pygorpho.cu)
+add_library (${PROJECT_NAME} SHARED ${SOURCE_DIR}/pygorpho.cu)
 target_compile_options (${PROJECT_NAME} PUBLIC "--expt-relaxed-constexpr" "-lineinfo" "--std=c++14")
 target_link_libraries (${PROJECT_NAME} gorpho)
 
 if (WIN32)
-	install (TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${PROJECT_NAME})
+	install (TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${SOURCE_DIR}/${PROJECT_NAME})
 else ()
-	install (TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PROJECT_NAME})
+	install (TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${SOURCE_DIR}/${PROJECT_NAME})
 endif ()

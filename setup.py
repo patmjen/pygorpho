@@ -18,6 +18,7 @@ setup(
     license='MIT',
     author='Patrick M. Jensen',
     author_email='patmjen@gmail.com',
+    package_dir={'': 'src'},
     packages=["pygorpho"],
     setup_requires=['numpy', 'scikit-build>=0.7.0'],
     install_requires=['numpy','scikit-build>=0.7.0'],
