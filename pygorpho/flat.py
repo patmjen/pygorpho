@@ -30,8 +30,9 @@ def dilate_erode(vol, strel, op, blockSize=[256,256,256]):
     assert (op == constants.DILATE or op == constants.ERODE)
 
     # Recast inputs to correct datatype
+    vol = np.asarray(vol)
     old_shape = vol.shape
-    vol = np.atleast_3d(np.asarray(vol))
+    vol = np.atleast_3d(vol)
     strel = np.atleast_3d(np.asarray(strel, dtype=np.bool_))
 
     # Prepare output volume
@@ -144,12 +145,16 @@ def linear_dilate_erode(vol, lineSteps, lineLens, op, blockSize=[256,256,512]):
     assert (op == constants.DILATE or op == constants.ERODE)
 
     # Recast inputs to correct datatype
+    vol = np.asarray(vol)
     old_shape = vol.shape
-    vol = np.atleast_3d(np.asarray(vol))
+    vol = np.atleast_3d(vol)
     lineSteps = np.atleast_2d(np.asarray(lineSteps, dtype=np.int32, order='C'))
     lineLens = np.atleast_1d(np.asarray(lineLens, dtype=np.int32))
     assert lineSteps.ndim == 2
+    assert lineSteps.shape[1] == 3
     assert lineSteps.shape[0] == lineLens.shape[0]
+
+    lineSteps = np.array(np.flip(lineSteps, axis=1))
 
     # Prepare output volume
     volSize = vol.shape

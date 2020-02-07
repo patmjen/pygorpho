@@ -30,8 +30,9 @@ def dilate_erode(vol, strel, op, blockSize=[256,256,256]):
     assert (op == constants.DILATE or op == constants.ERODE)
 
     # Recast inputs to correct datatype
+    vol = np.asarray(vol)
     old_shape = vol.shape
-    vol = np.atleast_3d(np.asarray(vol))
+    vol = np.atleast_3d(vol)
     strel = np.atleast_3d(np.asarray(strel, dtype=vol.dtype))
     assert vol.dtype == strel.dtype
 
