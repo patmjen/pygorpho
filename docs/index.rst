@@ -35,3 +35,4 @@ Resources
 =========
 * Free software: MIT license
 * Source code: https://github.com/patmjen/pygorpho
+* PyPI: https://pypi.org/project/pygorpho/
