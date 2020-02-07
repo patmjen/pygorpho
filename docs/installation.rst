@@ -6,11 +6,7 @@ To use the library you must have an NVIDIA GPU and install `CUDA Toolkit <https:
 
 Installing with pip
 ===================
-First, install `NumPy <https://numpy.org/>`_: ::
-
-    pip install numpy
-
-Then, install with pip: ::
+Install with pip: ::
 
     pip install pygorpho
 

@@ -11,11 +11,7 @@ This is a Python library for fast 3D mathematical morphology using CUDA. Current
 **Documentation** can be found on [readthedocs](https://pygorpho.readthedocs.io)
 
 ## Installation
-First, make sure you have [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) 9.2 or later installed. Also, you must install [NumPy](https://numpy.org/):
-```
-pip install numpy
-```
-Then, install with pip:
+First, make sure you have [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) 9.2 or later installed. Then, install with pip:
 ```
 pip install pygorpho
 ```
