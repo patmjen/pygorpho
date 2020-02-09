@@ -69,6 +69,20 @@ void doFlatLinearDilateErode(void *resPtr, const void *volPtr, const int *lineSt
     }
 }
 
+gpho::ApproxType getApproxTypeFromCode(int typeCode)
+{
+    switch (typeCode) {
+        case AT_INSIDE:
+            return gpho::APPROX_INSIDE;
+        case AT_BEST:
+            return gpho::APPROX_BEST;
+        case AT_OUTSIDE:
+            return gpho::APPROX_OUTSIDE;
+        default:
+            throw ERR_BAD_APPROX_TYPE;
+    }
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -95,12 +109,12 @@ PYGORPHO_API int pyGetDeviceName(int device, char *nameBuffer)
     return 0;
 }
 
-PYGORPHO_API int pyFlatBallApproxStrel(int *lineSteps, int *lineLens, int radius)
+PYGORPHO_API int pyFlatBallApproxStrel(int *lineSteps, int *lineLens, int radius, int typeCode)
 {
     // NOTE: It is assumed that lineSteps and lineLens point to allocated memory block of adequate size
     std::vector<gpho::LineSeg> lines;
     TRY_OR_RETURN_ERROR(
-        lines = gpho::flatBallApprox(radius);
+        lines = gpho::flatBallApprox(radius, getApproxTypeFromCode(typeCode));
     )
     int i = 0;
     for (const auto& line : lines) {

@@ -96,7 +96,9 @@ def raise_on_error(error_code):
         raise ValueError('invalid device number')
     elif error_code == 4: # ERR_NO_AVAILABLE_CUDA_DEVICE
         raise RuntimeError('no CUDA device available')
-    elif error_code == 5: # ERR_UNCAUGHT_EXCEPTION
+    elif error_code == 5: # ERR_BAD_APPROX_TYPE
+        raise RuntimeError('invalid approximation type')
+    elif error_code == -1: # ERR_UNCAUGHT_EXCEPTION
         raise RuntimeError('an unaught C++ exception occured')
     else:
         raise ValueError('invalid error code: {}'.format(error_code))
@@ -115,6 +117,7 @@ flat_ball_approx_impl.argtypes = [
     ctl.ndpointer(dtype=np.int32, flags='C'), # lineSteps
     ctl.ndpointer(dtype=np.int32, flags='C'), # lineLens
     ctypes.c_int,                             # radius
+    ctypes.c_int,                             # typeCode
 ]
 
 gen_dilate_erode_impl = PYGORPHO_LIB.pyGenDilateErode

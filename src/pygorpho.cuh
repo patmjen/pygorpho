@@ -44,12 +44,19 @@ enum ErrorCode : int {
     ERR_BAD_TYPE = 2,
     ERR_BAD_CUDA_DEVICE = 3,
     ERR_NO_AVAILABLE_CUDA_DEVICE = 4,
-    ERR_UNCAUGHT_EXCEPTION = 5
+    ERR_BAD_APPROX_TYPE = 5,
+    ERR_UNCAUGHT_EXCEPTION = -1
 };
 
 enum PyMorphOp : int {
     MOP_DILATE = 0,
     MOP_ERODE = 1
+};
+
+enum PyApproxType : int {
+    AT_INSIDE = 0,
+    AT_BEST = 1,
+    AT_OUTSIDE = 2
 };
 
 #define TRY_OR_RETURN_ERROR(expr) try {\
