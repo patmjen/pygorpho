@@ -25,7 +25,7 @@ set (CMAKE_CXX_STANDARD 11)
 set (SOURCE_DIR src)
 
 # Setup pygorpho
-project ("pygorpho" VERSION 0.5.0
+project ("pygorpho" VERSION 0.6.0
                     DESCRIPTION "Python bindings for gorpho"
                     LANGUAGES "CUDA")
 
