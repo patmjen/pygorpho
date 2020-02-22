@@ -24,6 +24,4 @@ Again, make sure you have [CUDA Toolkit](https://developer.nvidia.com/cuda-toolk
 3. Install the required Python packages: `pip install numpy scikit-build cmake ninja`
 4. Build and install: `python setup.py install`
 
-That should be it! To test, navigate to another directory (e.g. `cd ..`), run `python`, and try to `import pygorpho as pg`.
-
-**Note**: the reason you have to navigate to another directory before importing the package is because the build step makes a shared library. This will be installed with pygorpho, but if you stay in the folder where you cloned the git repo., `import pygorpho` will import from the local version, and not the installed version.
+That should be it! To test, run `python`, and try to `import pygorpho as pg`.
