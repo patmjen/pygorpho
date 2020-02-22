@@ -4,7 +4,8 @@ import numpy as np
 from . import _thin
 from . import constants
 
-def dilate_erode(vol, strel, op, blockSize=[256,256,256]):
+
+def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
     """
     Dilation/erosion with flat structuring element.
 
@@ -18,7 +19,7 @@ def dilate_erode(vol, strel, op, blockSize=[256,256,256]):
         dimensions.
     op
         Operation to perform. Must be either DILATE or ERODE from constants.
-    blockSize
+    block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
         this size.
 
@@ -36,21 +37,21 @@ def dilate_erode(vol, strel, op, blockSize=[256,256,256]):
     strel = np.atleast_3d(np.asarray(strel, dtype=np.bool_))
 
     # Prepare output volume
-    volSize = vol.shape
-    res = np.empty(volSize, dtype=vol.dtype)
+    vol_size = vol.shape
+    res = np.empty(vol_size, dtype=vol.dtype)
 
     ret = _thin.flat_dilate_erode_impl(
         res.ctypes.data, vol.ctypes.data, strel,
-        volSize[2], volSize[1], volSize[0],
+        vol_size[2], vol_size[1], vol_size[0],
         strel.shape[2], strel.shape[1], strel.shape[0],
         vol.dtype.num, op,
-        blockSize[2], blockSize[1], blockSize[0])
+        block_size[2], block_size[1], block_size[0])
     _thin.raise_on_error(ret)
 
     return np.resize(res, old_shape)
 
 
-def dilate(vol, strel, blockSize=[256,256,256]):
+def dilate(vol, strel, block_size=[256, 256, 256]):
     """
     Dilation with flat structuring element.
 
@@ -62,7 +63,7 @@ def dilate(vol, strel, blockSize=[256,256,256]):
     strel
         Structuring element. Must be convertible to numpy array of at most 3
         dimensions.
-    blockSize
+    block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
         this size.
 
@@ -71,10 +72,10 @@ def dilate(vol, strel, blockSize=[256,256,256]):
     numpy.array
         Volume of same size as vol with the result of dilation.
     """
-    return dilate_erode(vol, strel, constants.DILATE, blockSize)
+    return dilate_erode(vol, strel, constants.DILATE, block_size)
 
 
-def erode(vol, strel, blockSize=[256,256,256]):
+def erode(vol, strel, block_size=[256, 256, 256]):
     """
     Erosion with flat structuring element.
 
@@ -86,7 +87,7 @@ def erode(vol, strel, blockSize=[256,256,256]):
     strel
         Structuring element. Must be convertible to numpy array of at most 3
         dimensions.
-    blockSize
+    block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
         this size.
 
@@ -95,10 +96,11 @@ def erode(vol, strel, blockSize=[256,256,256]):
     numpy.array
         Volume of same size as vol with the result of erosion.
     """
-    return dilate_erode(vol, strel, constants.ERODE, blockSize)
+    return dilate_erode(vol, strel, constants.ERODE, block_size)
 
 
-def linear_dilate_erode(vol, lineSteps, lineLens, op, blockSize=[256,256,512]):
+def linear_dilate_erode(vol, line_steps, line_lens, op,
+                        block_size=[256, 256, 512]):
     """
     Dilation/erosion with flat line segment structuring elements.
 
@@ -114,16 +116,16 @@ def linear_dilate_erode(vol, lineSteps, lineLens, op, blockSize=[256,256,512]):
     vol
         Volume to dilate/erode. Must be convertible to numpy array of at most
         3 dimensions.
-    lineSteps
+    line_steps
         Step vector or sequence of step vectors. A step vector must have
         integer coordinates and control the direction of the line segment.
-    lineLens
+    line_lens
         Length or sequence of lengths. Controls the length of the line
         segments. A length of 0 leaves the volume unchanged.
     op
         Operation to perform for all line segments. Must be either DILATE or
         ERODE from constants.
-    blockSize
+    block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
         this size.
 
@@ -148,30 +150,31 @@ def linear_dilate_erode(vol, lineSteps, lineLens, op, blockSize=[256,256,512]):
     vol = np.asarray(vol)
     old_shape = vol.shape
     vol = np.atleast_3d(vol)
-    lineSteps = np.atleast_2d(np.asarray(lineSteps, dtype=np.int32, order='C'))
-    lineLens = np.atleast_1d(np.asarray(lineLens, dtype=np.int32))
-    assert lineSteps.ndim == 2
-    assert lineSteps.shape[1] == 3
-    assert lineSteps.shape[0] == lineLens.shape[0]
+    line_steps = np.atleast_2d(
+        np.asarray(line_steps, dtype=np.int32, order='C'))
+    line_lens = np.atleast_1d(np.asarray(line_lens, dtype=np.int32))
+    assert line_steps.ndim == 2
+    assert line_steps.shape[1] == 3
+    assert line_steps.shape[0] == line_lens.shape[0]
 
-    lineSteps = np.array(np.flip(lineSteps, axis=1))
+    line_steps = np.array(np.flip(line_steps, axis=1))
 
     # Prepare output volume
-    volSize = vol.shape
-    res = np.empty(volSize, dtype=vol.dtype)
+    vol_size = vol.shape
+    res = np.empty(vol_size, dtype=vol.dtype)
 
     ret = _thin.flat_linear_dilate_erode_impl(
-        res.ctypes.data, vol.ctypes.data, lineSteps, lineLens,
-        volSize[2], volSize[1], volSize[0],
-        lineLens.shape[0],
+        res.ctypes.data, vol.ctypes.data, line_steps, line_lens,
+        vol_size[2], vol_size[1], vol_size[0],
+        line_lens.shape[0],
         vol.dtype.num, op,
-        blockSize[2], blockSize[1], blockSize[0])
+        block_size[2], block_size[1], block_size[0])
     _thin.raise_on_error(ret)
 
     return np.resize(res, old_shape)
 
 
-def linear_dilate(vol, lineSteps, lineLens, blockSize=[256,256,512]):
+def linear_dilate(vol, line_steps, line_lens, block_size=[256, 256, 512]):
     """
     Dilation with flat line segment structuring elements.
 
@@ -187,13 +190,13 @@ def linear_dilate(vol, lineSteps, lineLens, blockSize=[256,256,512]):
     vol
         Volume to dilate/erode. Must be convertible to a numpy array of at
         most 3 dimensions.
-    lineSteps
+    line_steps
         Step vector or sequence of step vectors. A step vector must have
         integer coordinates and control the direction of the line segment.
-    lineLens
+    line_lens
         Length or sequence of lengths. Controls the length of the line
         segments. A length of 0 leaves the volume unchanged.
-    blockSize
+    block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
         this size.
 
@@ -202,10 +205,11 @@ def linear_dilate(vol, lineSteps, lineLens, blockSize=[256,256,512]):
     numpy.array
         Volume of same size as vol with the result of dilation.
     """
-    return linear_dilate_erode(vol, lineSteps, lineLens, constants.DILATE, blockSize)
+    return linear_dilate_erode(vol, line_steps, line_lens, constants.DILATE,
+                               block_size)
 
 
-def linear_erode(vol, lineSteps, lineLens, blockSize=[256,256,512]):
+def linear_erode(vol, line_steps, line_lens, block_size=[256, 256, 512]):
     """
     Erosion with flat line segment structuring elements.
 
@@ -221,13 +225,13 @@ def linear_erode(vol, lineSteps, lineLens, blockSize=[256,256,512]):
     vol
         Volume to dilate/erode. Must be convertible to a numpy array of at
         most 3 dimensions.
-    lineSteps
+    line_steps
         Step vector or sequence of step vectors. A step vector must have
         integer coordinates and control the direction of the line segment.
-    lineLens
+    line_lens
         Length or sequence of lengths. Controls the length of the line
         segments. A length of 0 leaves the volume unchanged.
-    blockSize
+    block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
         this size.
 
@@ -236,4 +240,5 @@ def linear_erode(vol, lineSteps, lineLens, blockSize=[256,256,512]):
     numpy.array
         Volume of same size as vol with the result of erosion.
     """
-    return linear_dilate_erode(vol, lineSteps, lineLens, constants.ERODE, blockSize)
+    return linear_dilate_erode(vol, line_steps, line_lens, constants.ERODE,
+                               block_size)

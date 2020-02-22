@@ -4,7 +4,8 @@ import numpy as np
 from . import _thin
 from . import constants
 
-def flatBallApprox(radius, type=constants.BEST):
+
+def flat_ball_approx(radius, type=constants.BEST):
     """
     Returns approximation to flat ball of radius using line segments.
 
@@ -32,7 +33,7 @@ def flatBallApprox(radius, type=constants.BEST):
     """
     LINE_COUNT = 13
     assert (type == constants.INSIDE or type == constants.BEST or
-        type == constants.OUTSIDE)
+            type == constants.OUTSIDE)
 
     radius = ctypes.c_int(radius)
     type = ctypes.c_int(type)

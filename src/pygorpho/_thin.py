@@ -7,12 +7,15 @@ import numpy as np
 import numpy.ctypeslib as ctl
 import platform
 
+
 class _DummyFunc:
     pass
+
 
 class _DummyLib:
     def __getattr__(self, name):
         return _DummyFunc()
+
 
 # Load the shared library
 def try_lib_load():
@@ -38,7 +41,9 @@ def try_lib_load():
     rtd_build_environ = 'PYGORPHO_BUILD_READTHEDOCS'
     if rtd_build_environ in os.environ:
         import warnings
-        warnings.warn('Environment variable {} exists - we assume documentation is being built and are aborting the import'.format(rtd_build_environ))
+        warnings.warn('Environment variable {} exists - we assume '
+                      'documentation is being built and are aborting the '
+                      'import'.format(rtd_build_environ))
         return _DummyLib(), __file__
 
     path_candidates = []
@@ -62,13 +67,15 @@ def try_lib_load():
             # Lib was not here so move on...
             pass
     else:
-        raise ImportError('could not find pygorpho dynamic library file (try setting PYGORPHO_PATH environment variable)')
+        raise ImportError('could not find pygorpho dynamic library file '
+                          '(try setting PYGORPHO_PATH environment variable)')
 
 
 PYGORPHO_LIB, PYGORPHO_PATH = try_lib_load()
 
-DILATE = 0 # Must match MOP_DILATE in pygorpho.cuh
-ERODE = 1 # Must match MOP_ERODE in pygorpho.cuh
+DILATE = 0  # Must match MOP_DILATE in pygorpho.cuh
+ERODE = 1  # Must match MOP_ERODE in pygorpho.cuh
+
 
 def raise_on_error(error_code):
     """
@@ -86,19 +93,19 @@ def raise_on_error(error_code):
     RuntimeError
         If error_code is 4-5
     """
-    if error_code == 0: # SUCCESS
+    if error_code == 0:  # SUCCESS
         return
-    elif error_code == 1: # ERR_BAD_MORPH_OP
+    elif error_code == 1:  # ERR_BAD_MORPH_OP
         raise ValueError('invalid morhology operation code')
-    elif error_code == 2: # ERR_BAD_TYPE
+    elif error_code == 2:  # ERR_BAD_TYPE
         raise ValueError('invalid type')
-    elif error_code == 3: # ERR_BAD_CUDA_DEVICE
+    elif error_code == 3:  # ERR_BAD_CUDA_DEVICE
         raise ValueError('invalid device number')
-    elif error_code == 4: # ERR_NO_AVAILABLE_CUDA_DEVICE
+    elif error_code == 4:  # ERR_NO_AVAILABLE_CUDA_DEVICE
         raise RuntimeError('no CUDA device available')
-    elif error_code == 5: # ERR_BAD_APPROX_TYPE
+    elif error_code == 5:  # ERR_BAD_APPROX_TYPE
         raise RuntimeError('invalid approximation type')
-    elif error_code == -1: # ERR_UNCAUGHT_EXCEPTION
+    elif error_code == -1:  # ERR_UNCAUGHT_EXCEPTION
         raise RuntimeError('an unaught C++ exception occured')
     else:
         raise ValueError('invalid error code: {}'.format(error_code))
@@ -114,61 +121,61 @@ get_device_name_impl.argtypes = [
 
 flat_ball_approx_impl = PYGORPHO_LIB.pyFlatBallApproxStrel
 flat_ball_approx_impl.argtypes = [
-    ctl.ndpointer(dtype=np.int32, flags='C'), # lineSteps
-    ctl.ndpointer(dtype=np.int32, flags='C'), # lineLens
-    ctypes.c_int,                             # radius
-    ctypes.c_int,                             # typeCode
+    ctl.ndpointer(dtype=np.int32, flags='C'),  # lineSteps
+    ctl.ndpointer(dtype=np.int32, flags='C'),  # lineLens
+    ctypes.c_int,                              # radius
+    ctypes.c_int,                              # typeCode
 ]
 
 gen_dilate_erode_impl = PYGORPHO_LIB.pyGenDilateErode
 gen_dilate_erode_impl.argtypes = [
-    ctypes.c_void_p, # res
-    ctypes.c_void_p, # vol
-    ctypes.c_void_p, # strel
-    ctypes.c_int,    # volX
-    ctypes.c_int,    # volY
-    ctypes.c_int,    # volZ
-    ctypes.c_int,    # strelX
-    ctypes.c_int,    # strelY
-    ctypes.c_int,    # strelZ
-    ctypes.c_int,    # type
-    ctypes.c_int,    # op
-    ctypes.c_int,    # blockX
-    ctypes.c_int,    # blockY
-    ctypes.c_int,    # blockZ
+    ctypes.c_void_p,  # res
+    ctypes.c_void_p,  # vol
+    ctypes.c_void_p,  # strel
+    ctypes.c_int,     # volX
+    ctypes.c_int,     # volY
+    ctypes.c_int,     # volZ
+    ctypes.c_int,     # strelX
+    ctypes.c_int,     # strelY
+    ctypes.c_int,     # strelZ
+    ctypes.c_int,     # type
+    ctypes.c_int,     # op
+    ctypes.c_int,     # blockX
+    ctypes.c_int,     # blockY
+    ctypes.c_int,     # blockZ
 ]
 
 flat_dilate_erode_impl = PYGORPHO_LIB.pyFlatDilateErode
 flat_dilate_erode_impl.argtypes = [
-    ctypes.c_void_p,                               # res
-    ctypes.c_void_p,                               # vol
-    ctl.ndpointer(dtype=np.dtype('?'), flags='C'), # strel
-    ctypes.c_int,                                  # volX
-    ctypes.c_int,                                  # volY
-    ctypes.c_int,                                  # volZ
-    ctypes.c_int,                                  # strelX
-    ctypes.c_int,                                  # strelY
-    ctypes.c_int,                                  # strelZ
-    ctypes.c_int,                                  # type
-    ctypes.c_int,                                  # op
-    ctypes.c_int,                                  # blockX
-    ctypes.c_int,                                  # blockY
-    ctypes.c_int,                                  # blockZ
+    ctypes.c_void_p,                                # res
+    ctypes.c_void_p,                                # vol
+    ctl.ndpointer(dtype=np.dtype('?'), flags='C'),  # strel
+    ctypes.c_int,                                   # volX
+    ctypes.c_int,                                   # volY
+    ctypes.c_int,                                   # volZ
+    ctypes.c_int,                                   # strelX
+    ctypes.c_int,                                   # strelY
+    ctypes.c_int,                                   # strelZ
+    ctypes.c_int,                                   # type
+    ctypes.c_int,                                   # op
+    ctypes.c_int,                                   # blockX
+    ctypes.c_int,                                   # blockY
+    ctypes.c_int,                                   # blockZ
 ]
 
 flat_linear_dilate_erode_impl = PYGORPHO_LIB.pyFlatLinearDilateErode
 flat_linear_dilate_erode_impl.argtypes = [
-    ctypes.c_void_p,                          # res
-    ctypes.c_void_p,                          # vol
-    ctl.ndpointer(dtype=np.int32, flags='C'), # lineSteps
-    ctl.ndpointer(dtype=np.int32, flags='C'), # lineLens
-    ctypes.c_int,                             # volX
-    ctypes.c_int,                             # volY
-    ctypes.c_int,                             # volZ
-    ctypes.c_int,                             # numLines
-    ctypes.c_int,                             # type
-    ctypes.c_int,                             # op
-    ctypes.c_int,                             # blockX
-    ctypes.c_int,                             # blockY
-    ctypes.c_int,                             # blockZ
+    ctypes.c_void_p,                           # res
+    ctypes.c_void_p,                           # vol
+    ctl.ndpointer(dtype=np.int32, flags='C'),  # lineSteps
+    ctl.ndpointer(dtype=np.int32, flags='C'),  # lineLens
+    ctypes.c_int,                              # volX
+    ctypes.c_int,                              # volY
+    ctypes.c_int,                              # volZ
+    ctypes.c_int,                              # numLines
+    ctypes.c_int,                              # type
+    ctypes.c_int,                              # op
+    ctypes.c_int,                              # blockX
+    ctypes.c_int,                              # blockY
+    ctypes.c_int,                              # blockZ
 ]

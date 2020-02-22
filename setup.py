@@ -9,7 +9,8 @@ setup(
     description='Python bindings for gorpho',
     url='https://pygorpho.readthedocs.io/',
     project_urls={
-        'Documentation': 'https://pygorpho.readthedocs.io/en/latest/api-doc.html',
+        'Documentation':
+            'https://pygorpho.readthedocs.io/en/latest/api-doc.html',
         'PyPI': 'https://pypi.org/project/pygorpho/',
         'Source': 'https://github.com/patmjen/pygorpho',
     },
@@ -21,7 +22,7 @@ setup(
     package_dir={'': 'src'},
     packages=["pygorpho"],
     setup_requires=['numpy', 'scikit-build>=0.7.0'],
-    install_requires=['numpy','scikit-build>=0.7.0'],
+    install_requires=['numpy', 'scikit-build>=0.7.0'],
     cmake_languages=('CUDA',),
     cmake_minimum_required_version='3.10',
     classifiers=[

@@ -2,6 +2,7 @@
 import ctypes
 from . import _thin
 
+
 def get_device_count():
     """
     Returns the number of available CUDA devices.
@@ -31,4 +32,4 @@ def get_device_name(device):
     buffer = ctypes.create_string_buffer(256)
     ret = _thin.get_device_name_impl(device, buffer)
     _thin.raise_on_error(ret)
-    return buffer.value.decode() # Decode to return a proper string
+    return buffer.value.decode()  # Decode to return a proper string
