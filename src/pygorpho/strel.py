@@ -7,7 +7,7 @@ from . import constants
 
 def flat_ball_approx(radius, type=constants.BEST):
     """
-    Returns approximation to flat ball of radius using line segments.
+    Returns approximation to flat ball using line segments.
 
     The approximation is constructed according to [J19]_.
 
@@ -17,7 +17,8 @@ def flat_ball_approx(radius, type=constants.BEST):
         Integer radius of flat ball.
     type
         Whether to constrain the zonohedral approximation inside or outside
-        the sphere. Must either INSIDE, BEST, or OUTSIDE from constants.
+        the sphere. Must either ``INSIDE``, ``BEST``, or ``OUTSIDE`` from
+        constants.
 
     Returns
     -------

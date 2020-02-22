@@ -18,7 +18,8 @@ def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
         Structuring element. Must be convertible to numpy array of at most 3
         dimensions.
     op
-        Operation to perform. Must be either DILATE or ERODE from constants.
+        Operation to perform. Must be either ``DILATE`` or ``ERODE`` from
+        constants.
     block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
         this size.
@@ -106,10 +107,10 @@ def linear_dilate_erode(vol, line_steps, line_lens, op,
 
     Dilates/erodes volume with a sequence of flat line segments. Line segments
     are parameterized with a (integer) step vector and a length giving the
-    number of steps. The operations is the same for all line segments.
+    number of steps. The operation is the same for all line segments.
 
-    The operations is performed using the van Herk/Gil-Werman algorithm [H92]_
-    [GW93]_.
+    The operations are performed using the van Herk/Gil-Werman algorithm
+    [H92]_ [GW93]_.
 
     Parameters
     ----------
@@ -123,8 +124,8 @@ def linear_dilate_erode(vol, line_steps, line_lens, op,
         Length or sequence of lengths. Controls the length of the line
         segments. A length of 0 leaves the volume unchanged.
     op
-        Operation to perform for all line segments. Must be either DILATE or
-        ERODE from constants.
+        Operation to perform for all line segments. Must be either ``DILATE``
+        or ``ERODE`` from constants.
     block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
         this size.
@@ -182,8 +183,8 @@ def linear_dilate(vol, line_steps, line_lens, block_size=[256, 256, 512]):
     parameterized with a (integer) step vector and a length giving the number
     of steps. The operations is the same for all line segments.
 
-    The operations is performed using the van Herk/Gil-Werman algorithm [H92]_
-    [GW93]_.
+    The operations are performed using the van Herk/Gil-Werman algorithm
+    [H92]_ [GW93]_.
 
     Parameters
     ----------
@@ -217,8 +218,8 @@ def linear_erode(vol, line_steps, line_lens, block_size=[256, 256, 512]):
     parameterized with a (integer) step vector and a length giving the number
     of steps. The operations is the same for all line segments.
 
-    The operations is performed using the van Herk/Gil-Werman algorithm [H92]_
-    [GW93]_.
+    The operations are performed using the van Herk/Gil-Werman algorithm
+    [H92]_ [GW93]_.
 
     Parameters
     ----------
