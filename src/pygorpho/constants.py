@@ -6,6 +6,14 @@ from . import _thin
 DILATE = _thin.DILATE
 #: Erosion
 ERODE = _thin.ERODE
+#: Opening
+OPEN = _thin.OPEN
+#: Closing
+CLOSE = _thin.CLOSE
+#: Top hat
+TOPHAT = _thin.TOPHAT
+#: Bot hat
+BOTHAT = _thin.BOTHAT
 
 #: Inside
 INSIDE = 0

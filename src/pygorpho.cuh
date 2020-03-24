@@ -50,7 +50,11 @@ enum ErrorCode : int {
 
 enum PyMorphOp : int {
     MOP_DILATE = 0,
-    MOP_ERODE = 1
+    MOP_ERODE = 1,
+    MOP_OPEN = 2,
+    MOP_CLOSE = 3,
+    MOP_TOPHAT = 4,
+    MOP_BOTHAT = 5
 };
 
 enum PyApproxType : int {

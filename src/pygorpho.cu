@@ -26,18 +26,33 @@ void doGenDilateErode(void *resPtr, const void *volPtr, const void *strelPtr, in
 }
 
 template <class Ty>
-void doFlatDilateErode(void *resPtr, const void *volPtr, const bool *strelPtr, int3 volSize, int3 strelSize,
+void doFlatMorph(void *resPtr, const void *volPtr, const bool *strelPtr, int3 volSize, int3 strelSize,
     int op, int3 blockSize)
 {
     gpho::HostView<Ty> res(static_cast<Ty *>(resPtr), volSize);
     gpho::HostView<const Ty> vol(static_cast<const Ty *>(volPtr), volSize);
     gpho::HostView<const bool> strel(strelPtr, strelSize);
 
-    if (op == MOP_DILATE) {
+    switch (op) {
+    case MOP_DILATE:
         gpho::flatDilate(res, vol, strel, blockSize);
-    } else if (op == MOP_ERODE) {
+        break;
+    case MOP_ERODE:
         gpho::flatErode(res, vol, strel, blockSize);
-    } else {
+        break;
+    case MOP_OPEN:
+        gpho::flatOpen(res, vol, strel, blockSize);
+        break;
+    case MOP_CLOSE:
+        gpho::flatClose(res, vol, strel, blockSize);
+        break;
+    case MOP_TOPHAT:
+        gpho::flatTophat(res, vol, strel, blockSize);
+        break;
+    case MOP_BOTHAT:
+        gpho::flatBothat(res, vol, strel, blockSize);
+        break;
+    default:
         throw ERR_BAD_MORPH_OP;
     }
 }
@@ -141,7 +156,7 @@ PYGORPHO_API int pyGenDilateErode(void *res, const void *vol, const void *strel,
     return SUCCESS;
 }
 
-PYGORPHO_API int pyFlatDilateErode(void *res, const void *vol, const bool *strel,
+PYGORPHO_API int pyFlatMorphOp(void *res, const void *vol, const bool *strel,
     int volX, int volY, int volZ, int strelX, int strelY, int strelZ, int type, int op,
     int blockX, int blockY, int blockZ)
 {
@@ -150,7 +165,7 @@ PYGORPHO_API int pyFlatDilateErode(void *res, const void *vol, const bool *strel
     int3 strelSize = make_int3(strelX, strelY, strelZ);
     int3 blockSize = make_int3(blockX, blockY, blockZ);
     TRY_OR_RETURN_ERROR(
-        typeDispatch(type, doFlatDilateErode, res, vol, strel, volSize, strelSize, op, blockSize);
+        typeDispatch(type, doFlatMorph, res, vol, strel, volSize, strelSize, op, blockSize);
     )
     return SUCCESS;
 }

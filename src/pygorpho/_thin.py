@@ -75,6 +75,10 @@ PYGORPHO_LIB, PYGORPHO_PATH = try_lib_load()
 
 DILATE = 0  # Must match MOP_DILATE in pygorpho.cuh
 ERODE = 1  # Must match MOP_ERODE in pygorpho.cuh
+OPEN = 2  # Must match MOP_OPEN in pygorpho.cuh
+CLOSE = 3  # Must match MOP_CLOSE in pygorpho.cuh
+TOPHAT = 4  # Must match MOP_TOPHAT in pygorpho.cuh
+BOTHAT = 5  # Must match MOP_BOTHAT in pygorpho.cuh
 
 
 def raise_on_error(error_code):
@@ -145,8 +149,8 @@ gen_dilate_erode_impl.argtypes = [
     ctypes.c_int,     # blockZ
 ]
 
-flat_dilate_erode_impl = PYGORPHO_LIB.pyFlatDilateErode
-flat_dilate_erode_impl.argtypes = [
+flat_morph_op_impl = PYGORPHO_LIB.pyFlatMorphOp
+flat_morph_op_impl.argtypes = [
     ctypes.c_void_p,                                # res
     ctypes.c_void_p,                                # vol
     ctl.ndpointer(dtype=np.dtype('?'), flags='C'),  # strel

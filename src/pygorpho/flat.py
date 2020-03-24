@@ -41,7 +41,7 @@ def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
     vol_size = vol.shape
     res = np.empty(vol_size, dtype=vol.dtype)
 
-    ret = _thin.flat_dilate_erode_impl(
+    ret = _thin.flat_morph_op_impl(
         res.ctypes.data, vol.ctypes.data, strel,
         vol_size[2], vol_size[1], vol_size[0],
         strel.shape[2], strel.shape[1], strel.shape[0],
@@ -98,6 +98,206 @@ def erode(vol, strel, block_size=[256, 256, 256]):
         Volume of same size as vol with the result of erosion.
     """
     return dilate_erode(vol, strel, constants.ERODE, block_size)
+
+
+def open_close(vol, strel, op, block_size=[256, 256, 256]):
+    """
+    Openning/closing with flat structuring element.
+
+    Parameters
+    ----------
+    vol
+        Volume to open/close. Must be convertible to numpy array of at most
+        3 dimensions.
+    strel
+        Structuring element. Must be convertible to numpy array of at most 3
+        dimensions.
+    op
+        Operation to perform. Must be either ``DILATE`` or ``ERODE`` from
+        constants.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of opening/closing.
+    """
+    assert (op == constants.OPEN or op == constants.CLOSE)
+
+    # Recast inputs to correct datatype
+    vol = np.asarray(vol)
+    old_shape = vol.shape
+    vol = np.atleast_3d(vol)
+    strel = np.atleast_3d(np.asarray(strel, dtype=np.bool_))
+
+    # Prepare output volume
+    vol_size = vol.shape
+    res = np.empty(vol_size, dtype=vol.dtype)
+
+    ret = _thin.flat_morph_op_impl(
+        res.ctypes.data, vol.ctypes.data, strel,
+        vol_size[2], vol_size[1], vol_size[0],
+        strel.shape[2], strel.shape[1], strel.shape[0],
+        vol.dtype.num, op,
+        block_size[2], block_size[1], block_size[0])
+    _thin.raise_on_error(ret)
+
+    return np.resize(res, old_shape)
+
+
+def open(vol, strel, block_size=[256, 256, 256]):
+    """
+    Opening with flat structuring element.
+
+    Parameters
+    ----------
+    vol
+        Volume to open. Must be convertible to numpy array of at most
+        3 dimensions.
+    strel
+        Structuring element. Must be convertible to numpy array of at most 3
+        dimensions.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of opening.
+    """
+    return open_close(vol, strel, constants.OPEN, block_size)
+
+
+def close(vol, strel, block_size=[256, 256, 256]):
+    """
+    Closing with flat structuring element.
+
+    Parameters
+    ----------
+    vol
+        Volume to close. Must be convertible to numpy array of at most
+        3 dimensions.
+    strel
+        Structuring element. Must be convertible to numpy array of at most 3
+        dimensions.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of closing.
+    """
+    return open_close(vol, strel, constants.CLOSE, block_size)
+
+
+def tophat_bothat(vol, strel, op, block_size=[256, 256, 256]):
+    """
+    Top/bot hat tranform with flat structuring element.
+
+    Top hat and bot hat transforms are also known as, respectively, white top
+    hat transform and black top hat transform. They are given by
+    ``tophat(x) = x - open(x)`` and ``bothat(x) = close(x) - x``.
+
+    Parameters
+    ----------
+    vol
+        Volume to top/bot hat transform. Must be convertible to numpy array of
+        at most 3 dimensions.
+    strel
+        Structuring element. Must be convertible to numpy array of at most 3
+        dimensions.
+    op
+        Operation to perform. Must be either ``DILATE`` or ``ERODE`` from
+        constants.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of opening/closing.
+    """
+    assert (op == constants.TOPHAT or op == constants.BOTHAT)
+
+    # Recast inputs to correct datatype
+    vol = np.asarray(vol)
+    old_shape = vol.shape
+    vol = np.atleast_3d(vol)
+    strel = np.atleast_3d(np.asarray(strel, dtype=np.bool_))
+
+    # Prepare output volume
+    vol_size = vol.shape
+    res = np.empty(vol_size, dtype=vol.dtype)
+
+    ret = _thin.flat_morph_op_impl(
+        res.ctypes.data, vol.ctypes.data, strel,
+        vol_size[2], vol_size[1], vol_size[0],
+        strel.shape[2], strel.shape[1], strel.shape[0],
+        vol.dtype.num, op,
+        block_size[2], block_size[1], block_size[0])
+    _thin.raise_on_error(ret)
+
+    return np.resize(res, old_shape)
+
+
+def tophat(vol, strel, block_size=[256, 256, 256]):
+    """
+    Top hat transform with flat structuring element.
+
+    Also known as a white top hat transform.
+    It is given by ``tophat(x) = x - open(x)``.
+
+    Parameters
+    ----------
+    vol
+        Volume to transform. Must be convertible to numpy array of at most
+        3 dimensions.
+    strel
+        Structuring element. Must be convertible to numpy array of at most 3
+        dimensions.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of the top hat transform.
+    """
+    return tophat_bothat(vol, strel, constants.TOPHAT, block_size)
+
+
+def bothat(vol, strel, block_size=[256, 256, 256]):
+    """
+    Bot hat transform with flat structuring element.
+
+    Also known as a black top hat transform.
+    It is given by ``bothat(x) = close(x) - x``.
+
+    Parameters
+    ----------
+    vol
+        Volume to transform. Must be convertible to numpy array of at most
+        3 dimensions.
+    strel
+        Structuring element. Must be convertible to numpy array of at most 3
+        dimensions.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of the bot hat transform.
+    """
+    return tophat_bothat(vol, strel, constants.BOTHAT, block_size)
 
 
 def linear_dilate_erode(vol, line_steps, line_lens, op,
