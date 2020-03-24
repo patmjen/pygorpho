@@ -24,13 +24,6 @@ Features
    api-doc
    license
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-
-
 Resources
 =========
 * Free software: MIT license
