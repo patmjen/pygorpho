@@ -113,7 +113,7 @@ def open_close(vol, strel, op, block_size=[256, 256, 256]):
         Structuring element. Must be convertible to numpy array of at most 3
         dimensions.
     op
-        Operation to perform. Must be either ``DILATE`` or ``ERODE`` from
+        Operation to perform. Must be either ``OPEN`` or ``CLOSE`` from
         constants.
     block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
@@ -212,7 +212,7 @@ def tophat_bothat(vol, strel, op, block_size=[256, 256, 256]):
         Structuring element. Must be convertible to numpy array of at most 3
         dimensions.
     op
-        Operation to perform. Must be either ``DILATE`` or ``ERODE`` from
+        Operation to perform. Must be either ``TOPHAT`` or ``BOTHAT`` from
         constants.
     block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
