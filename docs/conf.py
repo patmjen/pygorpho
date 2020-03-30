@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../src'))
 # -- Project information -----------------------------------------------------
 
 project = 'pygorpho'
-copyright = '2019, Patrick M. Jensen'
+copyright = '2020, Patrick M. Jensen'
 author = 'Patrick M. Jensen'
 
 # The short X.Y version
