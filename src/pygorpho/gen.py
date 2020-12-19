@@ -28,6 +28,19 @@ def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of dilation/erosion.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple dilation with an 11 x 11 x 11 box structuring element
+        >>> vol = np.zeros((100, 100, 100))
+        >>> vol[50, 50, 50] = 1
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.gen.dilate_erode(vol, strel, pg.DILATE)
     """
     assert (op == constants.DILATE or op == constants.ERODE)
 
@@ -73,6 +86,19 @@ def dilate(vol, strel, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of dilation/erosion.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple dilation with an 11 x 11 x 11 box structuring element
+        >>> vol = np.zeros((100, 100, 100))
+        >>> vol[50, 50, 50] = 1
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.gen.dilate(vol, strel)
     """
     return dilate_erode(vol, strel, constants.DILATE, block_size)
 
@@ -97,5 +123,18 @@ def erode(vol, strel, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of dilation/erosion.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple erosion with an 11 x 11 x 11 box structuring element
+        >>> vol = np.ones((100, 100, 100))
+        >>> vol[50, 50, 50] = 0
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.gen.erode(vol, strel)
     """
     return dilate_erode(vol, strel, constants.ERODE, block_size)

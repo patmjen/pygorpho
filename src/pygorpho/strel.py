@@ -9,7 +9,8 @@ def flat_ball_approx(radius, type=constants.BEST):
     """
     Returns approximation to flat ball using line segments.
 
-    The approximation is constructed according to [J19]_.
+    The approximation is constructed according to [J19]_ and allows for
+    constant time morphology operations.
 
     Parameters
     ----------
@@ -25,6 +26,19 @@ def flat_ball_approx(radius, type=constants.BEST):
     (numpy.array, numpy.array)
         Tuple with step vectors and line lengths which parameterizes the line
         segments.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Dilation with ball approximation of radius 25
+        >>> vol = np.zeros((100,100,100))
+        >>> vol[50, 50, 50] = 1
+        >>> lineSteps, lineLens = pg.strel.flat_ball_approx(25)
+        >>> res = pg.flat.linear_dilate(vol, lineSteps, lineLens)
 
     References
     ----------

@@ -28,6 +28,19 @@ def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of dilation/erosion.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple dilation with an 11 x 11 x 11 box structuring element
+        >>> vol = np.zeros((100, 100, 100))
+        >>> vol[50, 50, 50] = 1
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.flat.dilate_erode(vol, strel, pg.DILATE)
     """
     assert (op == constants.DILATE or op == constants.ERODE)
 
@@ -72,6 +85,19 @@ def dilate(vol, strel, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of dilation.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple dilation with an 11 x 11 x 11 box structuring element
+        >>> vol = np.zeros((100, 100, 100))
+        >>> vol[50, 50, 50] = 1
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.flat.dilate(vol, strel)
     """
     return dilate_erode(vol, strel, constants.DILATE, block_size)
 
@@ -96,6 +122,19 @@ def erode(vol, strel, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of erosion.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple erosion with an 11 x 11 x 11 box structuring element
+        >>> vol = np.ones((100, 100, 100))
+        >>> vol[50, 50, 50] = 0
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.flat.erode(vol, strel)
     """
     return dilate_erode(vol, strel, constants.ERODE, block_size)
 
@@ -123,6 +162,20 @@ def open_close(vol, strel, op, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of opening/closing.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple opening with an 11 x 11 x 11 box structuring element
+        >>> vol = np.zeros((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 1  # Small box
+        >>> vol[60:80,60:80,40:60] = 1  # Big box
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.flat.open_close(vol, strel, pg.OPEN)
     """
     assert (op == constants.OPEN or op == constants.CLOSE)
 
@@ -167,6 +220,20 @@ def open(vol, strel, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of opening.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple opening with an 11 x 11 x 11 box structuring element
+        >>> vol = np.zeros((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 1  # Small box
+        >>> vol[60:80,60:80,40:60] = 1  # Big box
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.flat.open(vol, strel)
     """
     return open_close(vol, strel, constants.OPEN, block_size)
 
@@ -191,6 +258,20 @@ def close(vol, strel, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of closing.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple closing with an 11 x 11 x 11 box structuring element
+        >>> vol = np.ones((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 0  # Small box
+        >>> vol[60:80,60:80,40:60] = 0  # Big box
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.flat.close(vol, strel)
     """
     return open_close(vol, strel, constants.CLOSE, block_size)
 
@@ -222,6 +303,20 @@ def tophat_bothat(vol, strel, op, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of opening/closing.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple tophat with an 11 x 11 x 11 box structuring element
+        >>> vol = np.zeros((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 1  # Small box
+        >>> vol[60:80,60:80,40:60] = 1  # Big box
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.flat.tophat_bothat(vol, strel, pg.TOPHAT)
     """
     assert (op == constants.TOPHAT or op == constants.BOTHAT)
 
@@ -269,6 +364,20 @@ def tophat(vol, strel, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of the top hat transform.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple tophat with an 11 x 11 x 11 box structuring element
+        >>> vol = np.zeros((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 1  # Small box
+        >>> vol[60:80,60:80,40:60] = 1  # Big box
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.flat.tophat(vol, strel)
     """
     return tophat_bothat(vol, strel, constants.TOPHAT, block_size)
 
@@ -296,6 +405,20 @@ def bothat(vol, strel, block_size=[256, 256, 256]):
     -------
     numpy.array
         Volume of same size as vol with the result of the bot hat transform.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple bothat with an 11 x 11 x 11 box structuring element
+        >>> vol = np.ones((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 0  # Small box
+        >>> vol[60:80,60:80,40:60] = 0  # Big box
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.flat.bothat(vol, strel)
     """
     return tophat_bothat(vol, strel, constants.BOTHAT, block_size)
 
@@ -334,6 +457,21 @@ def linear_dilate_erode(vol, line_steps, line_lens, op,
     -------
     numpy.array
         Volume of same size as vol with the result of dilation/erosion.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple dilation with an 11 x 15 x 21 box structuring element
+        >>> vol = np.zeros((100,100,100))
+        >>> vol[50, 50, 50] = 1
+        >>> lineSteps = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        >>> lineLens = [11, 15, 21]
+        >>> op = pg.DILATE
+        >>> res = pg.flat.linear_dilate_erode(vol, lineSteps, lineLens, op)
 
     References
     ----------
@@ -405,6 +543,20 @@ def linear_dilate(vol, line_steps, line_lens, block_size=[256, 256, 512]):
     -------
     numpy.array
         Volume of same size as vol with the result of dilation.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple dilation with an 11 x 15 x 21 box structuring element
+        >>> vol = np.zeros((100,100,100))
+        >>> vol[50, 50, 50] = 1
+        >>> lineSteps = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        >>> lineLens = [11, 15, 21]
+        >>> res = pg.flat.linear_dilate(vol, lineSteps, lineLens)
     """
     return linear_dilate_erode(vol, line_steps, line_lens, constants.DILATE,
                                block_size)
@@ -440,6 +592,20 @@ def linear_erode(vol, line_steps, line_lens, block_size=[256, 256, 512]):
     -------
     numpy.array
         Volume of same size as vol with the result of erosion.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple erosion with an 11 x 15 x 21 box structuring element
+        >>> vol = np.ones((100,100,100))
+        >>> vol[50, 50, 50] = 0
+        >>> lineSteps = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        >>> lineLens = [11, 15, 21]
+        >>> res = pg.flat.linear_erode(vol, lineSteps, lineLens)
     """
     return linear_dilate_erode(vol, line_steps, line_lens, constants.ERODE,
                                block_size)
