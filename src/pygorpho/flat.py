@@ -39,7 +39,7 @@ def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
 
     # Prepare output volume
     vol_size = vol.shape
-    res = np.empty(vol_size, dtype=vol.dtype)
+    res = np.empty_like(vol)
 
     ret = _thin.flat_morph_op_impl(
         res.ctypes.data, vol.ctypes.data, strel,
@@ -134,7 +134,7 @@ def open_close(vol, strel, op, block_size=[256, 256, 256]):
 
     # Prepare output volume
     vol_size = vol.shape
-    res = np.empty(vol_size, dtype=vol.dtype)
+    res = np.empty_like(vol)
 
     ret = _thin.flat_morph_op_impl(
         res.ctypes.data, vol.ctypes.data, strel,
@@ -233,7 +233,7 @@ def tophat_bothat(vol, strel, op, block_size=[256, 256, 256]):
 
     # Prepare output volume
     vol_size = vol.shape
-    res = np.empty(vol_size, dtype=vol.dtype)
+    res = np.empty_like(vol)
 
     ret = _thin.flat_morph_op_impl(
         res.ctypes.data, vol.ctypes.data, strel,
@@ -362,7 +362,7 @@ def linear_dilate_erode(vol, line_steps, line_lens, op,
 
     # Prepare output volume
     vol_size = vol.shape
-    res = np.empty(vol_size, dtype=vol.dtype)
+    res = np.empty_like(vol)
 
     ret = _thin.flat_linear_dilate_erode_impl(
         res.ctypes.data, vol.ctypes.data, line_steps, line_lens,

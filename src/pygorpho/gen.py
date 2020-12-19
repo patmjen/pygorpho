@@ -40,7 +40,7 @@ def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
 
     # Prepare output volume
     vol_size = vol.shape
-    res = np.empty(vol_size, dtype=vol.dtype)
+    res = np.empty_like(vol)
 
     ret = _thin.gen_dilate_erode_impl(
         res.ctypes.data, vol.ctypes.data, strel.ctypes.data,
