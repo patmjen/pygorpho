@@ -218,7 +218,7 @@ def close(vol, strel, block_size=[256, 256, 256]):
 
 def tophat(vol, strel, block_size=[256, 256, 256]):
     """
-    Top hat transform with flat structuring element.
+    Top-hat transform with flat structuring element.
 
     Also known as a white top hat transform.
     It is given by ``tophat(x) = x - open(x)``.
@@ -226,8 +226,8 @@ def tophat(vol, strel, block_size=[256, 256, 256]):
     Parameters
     ----------
     vol
-        Volume to transform. Must be convertible to numpy array of at most
-        3 dimensions.
+        Volume to top-hat transform. Must be convertible to numpy array of at
+        most 3 dimensions.
     strel
         Structuring element. Must be convertible to numpy array of at most 3
         dimensions.
@@ -238,7 +238,7 @@ def tophat(vol, strel, block_size=[256, 256, 256]):
     Returns
     -------
     numpy.array
-        Volume of same size as vol with the result of the top hat transform.
+        Volume of same size as vol with the result of the top-hat transform.
 
     Example
     -------
@@ -247,7 +247,7 @@ def tophat(vol, strel, block_size=[256, 256, 256]):
 
         >>> import numpy as np
         >>> import pygorpho as pg
-        >>> # Simple tophat with an 11 x 11 x 11 box structuring element
+        >>> # Simple top-hat with an 11 x 11 x 11 box structuring element
         >>> vol = np.zeros((100, 100, 100))
         >>> vol[10:15,10:15,48:53] = 1  # Small box
         >>> vol[60:80,60:80,40:60] = 1  # Big box
@@ -259,16 +259,16 @@ def tophat(vol, strel, block_size=[256, 256, 256]):
 
 def bothat(vol, strel, block_size=[256, 256, 256]):
     """
-    Bot hat transform with flat structuring element.
+    Bot-hat transform with flat structuring element.
 
-    Also known as a black top hat transform.
+    Also known as a black top-hat transform.
     It is given by ``bothat(x) = close(x) - x``.
 
     Parameters
     ----------
     vol
-        Volume to transform. Must be convertible to numpy array of at most
-        3 dimensions.
+        Volume to bot-hat transform. Must be convertible to numpy array of at
+        most 3 dimensions.
     strel
         Structuring element. Must be convertible to numpy array of at most 3
         dimensions.
@@ -279,7 +279,7 @@ def bothat(vol, strel, block_size=[256, 256, 256]):
     Returns
     -------
     numpy.array
-        Volume of same size as vol with the result of the bot hat transform.
+        Volume of same size as vol with the result of the bot-hat transform.
 
     Example
     -------
@@ -288,7 +288,7 @@ def bothat(vol, strel, block_size=[256, 256, 256]):
 
         >>> import numpy as np
         >>> import pygorpho as pg
-        >>> # Simple bothat with an 11 x 11 x 11 box structuring element
+        >>> # Simple bot-hat with an 11 x 11 x 11 box structuring element
         >>> vol = np.ones((100, 100, 100))
         >>> vol[10:15,10:15,48:53] = 0  # Small box
         >>> vol[60:80,60:80,40:60] = 0  # Big box
@@ -313,8 +313,8 @@ def linear_morph(vol, line_steps, line_lens, op, block_size=[256, 256, 512]):
     Parameters
     ----------
     vol
-        Volume to dilate/erode. Must be convertible to numpy array of at most
-        3 dimensions.
+        Volume to apply operation to. Must be convertible to numpy array of at
+        most 3 dimensions.
     line_steps
         Step vector or sequence of step vectors. A step vector must have
         integer coordinates and control the direction of the line segment.
@@ -401,8 +401,8 @@ def linear_dilate(vol, line_steps, line_lens, block_size=[256, 256, 512]):
     Parameters
     ----------
     vol
-        Volume to dilate/erode. Must be convertible to a numpy array of at
-        most 3 dimensions.
+        Volume to dilate. Must be convertible to a numpy array of at most 3
+        dimensions.
     line_steps
         Step vector or sequence of step vectors. A step vector must have
         integer coordinates and control the direction of the line segment.
@@ -450,8 +450,8 @@ def linear_erode(vol, line_steps, line_lens, block_size=[256, 256, 512]):
     Parameters
     ----------
     vol
-        Volume to apply operation to. Must be convertible to a numpy array of
-        at most 3 dimensions.
+        Volume to erode. Must be convertible to a numpy array of at most 3
+        dimensions.
     line_steps
         Step vector or sequence of step vectors. A step vector must have
         integer coordinates and control the direction of the line segment.
