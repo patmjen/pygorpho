@@ -13,7 +13,7 @@ def test_dilate():
     expected = np.ones_like(vol)
     expected[2:5,2:6,1:6] = 2
 
-    actual1 = pg.gen.dilate_erode(vol, strel, pg.DILATE)
+    actual1 = pg.gen.morph(vol, strel, pg.DILATE)
     np.testing.assert_equal(actual1, expected)
 
     actual2 = pg.gen.dilate(vol, strel)
@@ -29,7 +29,7 @@ def test_erode():
     expected = np.zeros_like(vol)
     expected[2:5,2:6,1:6] = -1
 
-    actual1 = pg.gen.dilate_erode(vol, strel, pg.ERODE)
+    actual1 = pg.gen.morph(vol, strel, pg.ERODE)
     np.testing.assert_equal(actual1, expected)
 
     actual2 = pg.gen.erode(vol, strel)

@@ -5,21 +5,21 @@ from . import _thin
 from . import constants
 
 
-def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
+def morph(vol, strel, op, block_size=[256, 256, 256]):
     """
-    Dilation/erosion with flat structuring element.
+    Morphological operation with flat structuring element.
 
     Parameters
     ----------
     vol
-        Volume to dilate/erode. Must be convertible to numpy array of at most
-        3 dimensions.
+        Volume to apply operation to. Must be convertible to numpy array of at
+        most 3 dimensions.
     strel
         Structuring element. Must be convertible to numpy array of at most 3
         dimensions.
     op
-        Operation to perform. Must be either ``DILATE`` or ``ERODE`` from
-        constants.
+        Operation to perform. Must be either ``DILATE``, ``ERODE``, ``OPEN``,
+        ``CLOSE``, ``TOPHAT``, ``CLOSE`` from ``constants``.
     block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
         this size.
@@ -27,7 +27,7 @@ def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
     Returns
     -------
     numpy.array
-        Volume of same size as vol with the result of dilation/erosion.
+        Volume of same size as vol with the result of the operation.
 
     Example
     -------
@@ -40,9 +40,10 @@ def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
         >>> vol = np.zeros((100, 100, 100))
         >>> vol[50, 50, 50] = 1
         >>> strel = np.ones((11, 11, 11))
-        >>> res = pg.flat.dilate_erode(vol, strel, pg.DILATE)
+        >>> res = pg.flat.morph(vol, strel, pg.DILATE)
     """
-    assert (op == constants.DILATE or op == constants.ERODE)
+    assert(op in [constants.DILATE, constants.ERODE, constants.OPEN,
+                  constants.CLOSE, constants.TOPHAT, constants.BOTHAT])
 
     # Recast inputs to correct datatype
     vol = np.asarray(vol)
@@ -99,7 +100,7 @@ def dilate(vol, strel, block_size=[256, 256, 256]):
         >>> strel = np.ones((11, 11, 11))
         >>> res = pg.flat.dilate(vol, strel)
     """
-    return dilate_erode(vol, strel, constants.DILATE, block_size)
+    return morph(vol, strel, constants.DILATE, block_size)
 
 
 def erode(vol, strel, block_size=[256, 256, 256]):
@@ -136,68 +137,7 @@ def erode(vol, strel, block_size=[256, 256, 256]):
         >>> strel = np.ones((11, 11, 11))
         >>> res = pg.flat.erode(vol, strel)
     """
-    return dilate_erode(vol, strel, constants.ERODE, block_size)
-
-
-def open_close(vol, strel, op, block_size=[256, 256, 256]):
-    """
-    Openning/closing with flat structuring element.
-
-    Parameters
-    ----------
-    vol
-        Volume to open/close. Must be convertible to numpy array of at most
-        3 dimensions.
-    strel
-        Structuring element. Must be convertible to numpy array of at most 3
-        dimensions.
-    op
-        Operation to perform. Must be either ``OPEN`` or ``CLOSE`` from
-        constants.
-    block_size
-        Block size for GPU processing. Volume is sent to the GPU in blocks of
-        this size.
-
-    Returns
-    -------
-    numpy.array
-        Volume of same size as vol with the result of opening/closing.
-
-    Example
-    -------
-    .. code-block:: python
-        :dedent: 4
-
-        >>> import numpy as np
-        >>> import pygorpho as pg
-        >>> # Simple opening with an 11 x 11 x 11 box structuring element
-        >>> vol = np.zeros((100, 100, 100))
-        >>> vol[10:15,10:15,48:53] = 1  # Small box
-        >>> vol[60:80,60:80,40:60] = 1  # Big box
-        >>> strel = np.ones((11, 11, 11))
-        >>> res = pg.flat.open_close(vol, strel, pg.OPEN)
-    """
-    assert (op == constants.OPEN or op == constants.CLOSE)
-
-    # Recast inputs to correct datatype
-    vol = np.asarray(vol)
-    old_shape = vol.shape
-    vol = np.atleast_3d(vol)
-    strel = np.atleast_3d(np.asarray(strel, dtype=np.bool_))
-
-    # Prepare output volume
-    vol_size = vol.shape
-    res = np.empty_like(vol)
-
-    ret = _thin.flat_morph_op_impl(
-        res.ctypes.data, vol.ctypes.data, strel,
-        vol_size[2], vol_size[1], vol_size[0],
-        strel.shape[2], strel.shape[1], strel.shape[0],
-        vol.dtype.num, op,
-        block_size[2], block_size[1], block_size[0])
-    _thin.raise_on_error(ret)
-
-    return np.resize(res, old_shape)
+    return morph(vol, strel, constants.ERODE, block_size)
 
 
 def open(vol, strel, block_size=[256, 256, 256]):
@@ -235,7 +175,7 @@ def open(vol, strel, block_size=[256, 256, 256]):
         >>> strel = np.ones((11, 11, 11))
         >>> res = pg.flat.open(vol, strel)
     """
-    return open_close(vol, strel, constants.OPEN, block_size)
+    return morph(vol, strel, constants.OPEN, block_size)
 
 
 def close(vol, strel, block_size=[256, 256, 256]):
@@ -273,72 +213,7 @@ def close(vol, strel, block_size=[256, 256, 256]):
         >>> strel = np.ones((11, 11, 11))
         >>> res = pg.flat.close(vol, strel)
     """
-    return open_close(vol, strel, constants.CLOSE, block_size)
-
-
-def tophat_bothat(vol, strel, op, block_size=[256, 256, 256]):
-    """
-    Top/bot hat tranform with flat structuring element.
-
-    Top hat and bot hat transforms are also known as, respectively, white top
-    hat transform and black top hat transform. They are given by
-    ``tophat(x) = x - open(x)`` and ``bothat(x) = close(x) - x``.
-
-    Parameters
-    ----------
-    vol
-        Volume to top/bot hat transform. Must be convertible to numpy array of
-        at most 3 dimensions.
-    strel
-        Structuring element. Must be convertible to numpy array of at most 3
-        dimensions.
-    op
-        Operation to perform. Must be either ``TOPHAT`` or ``BOTHAT`` from
-        constants.
-    block_size
-        Block size for GPU processing. Volume is sent to the GPU in blocks of
-        this size.
-
-    Returns
-    -------
-    numpy.array
-        Volume of same size as vol with the result of opening/closing.
-
-    Example
-    -------
-    .. code-block:: python
-        :dedent: 4
-
-        >>> import numpy as np
-        >>> import pygorpho as pg
-        >>> # Simple tophat with an 11 x 11 x 11 box structuring element
-        >>> vol = np.zeros((100, 100, 100))
-        >>> vol[10:15,10:15,48:53] = 1  # Small box
-        >>> vol[60:80,60:80,40:60] = 1  # Big box
-        >>> strel = np.ones((11, 11, 11))
-        >>> res = pg.flat.tophat_bothat(vol, strel, pg.TOPHAT)
-    """
-    assert (op == constants.TOPHAT or op == constants.BOTHAT)
-
-    # Recast inputs to correct datatype
-    vol = np.asarray(vol)
-    old_shape = vol.shape
-    vol = np.atleast_3d(vol)
-    strel = np.atleast_3d(np.asarray(strel, dtype=np.bool_))
-
-    # Prepare output volume
-    vol_size = vol.shape
-    res = np.empty_like(vol)
-
-    ret = _thin.flat_morph_op_impl(
-        res.ctypes.data, vol.ctypes.data, strel,
-        vol_size[2], vol_size[1], vol_size[0],
-        strel.shape[2], strel.shape[1], strel.shape[0],
-        vol.dtype.num, op,
-        block_size[2], block_size[1], block_size[0])
-    _thin.raise_on_error(ret)
-
-    return np.resize(res, old_shape)
+    return morph(vol, strel, constants.CLOSE, block_size)
 
 
 def tophat(vol, strel, block_size=[256, 256, 256]):
@@ -379,7 +254,7 @@ def tophat(vol, strel, block_size=[256, 256, 256]):
         >>> strel = np.ones((11, 11, 11))
         >>> res = pg.flat.tophat(vol, strel)
     """
-    return tophat_bothat(vol, strel, constants.TOPHAT, block_size)
+    return morph(vol, strel, constants.TOPHAT, block_size)
 
 
 def bothat(vol, strel, block_size=[256, 256, 256]):
@@ -420,17 +295,17 @@ def bothat(vol, strel, block_size=[256, 256, 256]):
         >>> strel = np.ones((11, 11, 11))
         >>> res = pg.flat.bothat(vol, strel)
     """
-    return tophat_bothat(vol, strel, constants.BOTHAT, block_size)
+    return morph(vol, strel, constants.BOTHAT, block_size)
 
 
-def linear_dilate_erode(vol, line_steps, line_lens, op,
-                        block_size=[256, 256, 512]):
+def linear_morph(vol, line_steps, line_lens, op, block_size=[256, 256, 512]):
     """
-    Dilation/erosion with flat line segment structuring elements.
+    Morphological operation with flat line segment structuring elements.
 
-    Dilates/erodes volume with a sequence of flat line segments. Line segments
-    are parameterized with a (integer) step vector and a length giving the
-    number of steps. The operation is the same for all line segments.
+    Performs a morphological operation volume with a sequence of flat line
+    segments. Line segments are parameterized with a (integer) step vector and
+    a length giving the number of steps. The operation is the same for all line
+    segments.
 
     The operations are performed using the van Herk/Gil-Werman algorithm
     [H92]_ [GW93]_.
@@ -448,7 +323,7 @@ def linear_dilate_erode(vol, line_steps, line_lens, op,
         segments. A length of 0 leaves the volume unchanged.
     op
         Operation to perform for all line segments. Must be either ``DILATE``
-        or ``ERODE`` from constants.
+        or ``ERODE`` from ``constants``.
     block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
         this size.
@@ -456,7 +331,7 @@ def linear_dilate_erode(vol, line_steps, line_lens, op,
     Returns
     -------
     numpy.array
-        Volume of same size as vol with the result of dilation/erosion.
+        Volume of same size as vol with the result of the operation.
 
     Example
     -------
@@ -470,8 +345,7 @@ def linear_dilate_erode(vol, line_steps, line_lens, op,
         >>> vol[50, 50, 50] = 1
         >>> lineSteps = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
         >>> lineLens = [11, 15, 21]
-        >>> op = pg.DILATE
-        >>> res = pg.flat.linear_dilate_erode(vol, lineSteps, lineLens, op)
+        >>> res = pg.flat.linear_morph(vol, lineSteps, lineLens, pg.DILATE)
 
     References
     ----------
@@ -558,8 +432,8 @@ def linear_dilate(vol, line_steps, line_lens, block_size=[256, 256, 512]):
         >>> lineLens = [11, 15, 21]
         >>> res = pg.flat.linear_dilate(vol, lineSteps, lineLens)
     """
-    return linear_dilate_erode(vol, line_steps, line_lens, constants.DILATE,
-                               block_size)
+    return linear_morph(vol, line_steps, line_lens, constants.DILATE,
+                        block_size)
 
 
 def linear_erode(vol, line_steps, line_lens, block_size=[256, 256, 512]):
@@ -576,8 +450,8 @@ def linear_erode(vol, line_steps, line_lens, block_size=[256, 256, 512]):
     Parameters
     ----------
     vol
-        Volume to dilate/erode. Must be convertible to a numpy array of at
-        most 3 dimensions.
+        Volume to apply operation to. Must be convertible to a numpy array of
+        at most 3 dimensions.
     line_steps
         Step vector or sequence of step vectors. A step vector must have
         integer coordinates and control the direction of the line segment.
@@ -607,5 +481,5 @@ def linear_erode(vol, line_steps, line_lens, block_size=[256, 256, 512]):
         >>> lineLens = [11, 15, 21]
         >>> res = pg.flat.linear_erode(vol, lineSteps, lineLens)
     """
-    return linear_dilate_erode(vol, line_steps, line_lens, constants.ERODE,
-                               block_size)
+    return linear_morph(vol, line_steps, line_lens, constants.ERODE,
+                        block_size)

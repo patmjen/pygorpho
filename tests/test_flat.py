@@ -12,7 +12,7 @@ def test_dilate():
     expected = np.zeros_like(vol)
     expected[2:5,2:6,1:6] = 1
 
-    actual1 = pg.flat.dilate_erode(vol, strel, pg.DILATE)
+    actual1 = pg.flat.morph(vol, strel, pg.DILATE)
     np.testing.assert_equal(actual1, expected)
 
     actual2 = pg.flat.dilate(vol, strel)
@@ -28,7 +28,7 @@ def test_erode():
     expected = np.ones_like(vol)
     expected[2:5,2:6,1:6] = 0
 
-    actual1 = pg.flat.dilate_erode(vol, strel, pg.ERODE)
+    actual1 = pg.flat.morph(vol, strel, pg.ERODE)
     np.testing.assert_equal(actual1, expected)
 
     actual2 = pg.flat.erode(vol, strel)
@@ -43,7 +43,7 @@ def test_open():
 
     expected = np.zeros_like(vol)
 
-    actual1 = pg.flat.open_close(vol, strel, pg.OPEN)
+    actual1 = pg.flat.morph(vol, strel, pg.OPEN)
     np.testing.assert_equal(actual1, expected)
 
     actual2 = pg.flat.open(vol, strel)
@@ -58,7 +58,7 @@ def test_close():
 
     expected = np.ones_like(vol)
 
-    actual1 = pg.flat.open_close(vol, strel, pg.CLOSE)
+    actual1 = pg.flat.morph(vol, strel, pg.CLOSE)
     np.testing.assert_equal(actual1, expected)
 
     actual2 = pg.flat.close(vol, strel)
@@ -73,7 +73,7 @@ def test_tophat():
 
     expected = np.copy(vol)
 
-    actual1 = pg.flat.tophat_bothat(vol, strel, pg.TOPHAT)
+    actual1 = pg.flat.morph(vol, strel, pg.TOPHAT)
     np.testing.assert_equal(actual1, expected)
 
     actual2 = pg.flat.tophat(vol, strel)
@@ -88,7 +88,7 @@ def test_bothat():
 
     expected = 1 - np.copy(vol)
 
-    actual1 = pg.flat.tophat_bothat(vol, strel, pg.BOTHAT)
+    actual1 = pg.flat.morph(vol, strel, pg.BOTHAT)
     np.testing.assert_equal(actual1, expected)
 
     actual2 = pg.flat.bothat(vol, strel)
@@ -110,7 +110,7 @@ def test_bool_conversion():
 
 def test_invalid_op():
     with pytest.raises(AssertionError):
-        pg.flat.dilate_erode([], [], 99)
+        pg.flat.morph([], [], 99)
 
 
 def test_resize():

@@ -5,21 +5,21 @@ from . import _thin
 from . import constants
 
 
-def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
+def morph(vol, strel, op, block_size=[256, 256, 256]):
     """
-    Dilation/erosion with general structuring element.
+    Morphological operation with general structuring element.
 
     Parameters
     ----------
     vol
-        Volume to dilate/erode. Must be convertible to numpy array of at most
-        3 dimensions.
+        Volume to apply operation to. Must be convertible to numpy array of at
+        most 3 dimensions.
     strel
         Structuring element.  Must be convertible to numpy array of at most 3
         dimensions.
     op
         Operation to perform. Must be either ``DILATE`` or ``ERODE`` from
-        constants.
+        ``constants``.
     block_size
         Block size for GPU processing. Volume is sent to the GPU in blocks of
         this size.
@@ -27,7 +27,7 @@ def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
     Returns
     -------
     numpy.array
-        Volume of same size as vol with the result of dilation/erosion.
+        Volume of same size as vol with the result of the operation.
 
     Example
     -------
@@ -40,7 +40,7 @@ def dilate_erode(vol, strel, op, block_size=[256, 256, 256]):
         >>> vol = np.zeros((100, 100, 100))
         >>> vol[50, 50, 50] = 1
         >>> strel = np.ones((11, 11, 11))
-        >>> res = pg.gen.dilate_erode(vol, strel, pg.DILATE)
+        >>> res = pg.gen.morph(vol, strel, pg.DILATE)
     """
     assert (op == constants.DILATE or op == constants.ERODE)
 
@@ -100,7 +100,7 @@ def dilate(vol, strel, block_size=[256, 256, 256]):
         >>> strel = np.ones((11, 11, 11))
         >>> res = pg.gen.dilate(vol, strel)
     """
-    return dilate_erode(vol, strel, constants.DILATE, block_size)
+    return morph(vol, strel, constants.DILATE, block_size)
 
 
 def erode(vol, strel, block_size=[256, 256, 256]):
@@ -137,4 +137,4 @@ def erode(vol, strel, block_size=[256, 256, 256]):
         >>> strel = np.ones((11, 11, 11))
         >>> res = pg.gen.erode(vol, strel)
     """
-    return dilate_erode(vol, strel, constants.ERODE, block_size)
+    return morph(vol, strel, constants.ERODE, block_size)

@@ -13,7 +13,7 @@ def test_dilate():
     expected = np.zeros((7,7,7))
     expected[2:5,2:6,1:6] = 1
 
-    actual1 = pg.flat.linear_dilate_erode(vol, lineSteps, lineLens, pg.DILATE)
+    actual1 = pg.flat.linear_morph(vol, lineSteps, lineLens, pg.DILATE)
 
     np.testing.assert_equal(actual1, expected)
 
@@ -31,7 +31,7 @@ def test_erode():
     expected = np.ones((7,7,7))
     expected[2:5,2:6,1:6] = 0
 
-    actual1 = pg.flat.linear_dilate_erode(vol, lineSteps, lineLens, pg.ERODE)
+    actual1 = pg.flat.linear_morph(vol, lineSteps, lineLens, pg.ERODE)
     np.testing.assert_equal(actual1, expected)
 
     actual2 = pg.flat.linear_erode(vol, lineSteps, lineLens)
@@ -40,7 +40,7 @@ def test_erode():
 
 def test_invalid_op():
     with pytest.raises(AssertionError):
-        pg.flat.linear_dilate_erode([], [], [], 99)
+        pg.flat.linear_morph([], [], [], 99)
 
 
 def test_resize():
