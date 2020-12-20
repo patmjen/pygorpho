@@ -483,3 +483,201 @@ def linear_erode(vol, line_steps, line_lens, block_size=[256, 256, 512]):
     """
     return linear_morph(vol, line_steps, line_lens, constants.ERODE,
                         block_size)
+
+
+def linear_open(vol, line_steps, line_lens, block_size=[256, 256, 512]):
+    """
+    Opening with flat line segment structuring elements.
+
+    Opens volume with a sequence of flat line segments. Line segments are
+    parameterized with a (integer) step vector and a length giving the number
+    of steps. The operations is the same for all line segments.
+
+    The operations are performed using the van Herk/Gil-Werman algorithm
+    [H92]_ [GW93]_.
+
+    Parameters
+    ----------
+    vol
+        Volume to open. Must be convertible to a numpy array of at most 3
+        dimensions.
+    line_steps
+        Step vector or sequence of step vectors. A step vector must have
+        integer coordinates and control the direction of the line segment.
+    line_lens
+        Length or sequence of lengths. Controls the length of the line
+        segments. A length of 0 leaves the volume unchanged.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of opening.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple opening with an 11 x 11 x 11 box structuring element
+        >>> vol = np.zeros((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 1  # Small box
+        >>> vol[60:80,60:80,40:60] = 1  # Big box
+        >>> lineSteps = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        >>> lineLens = [11, 11, 11]
+        >>> res = pg.flat.linear_open(vol, lineSteps, lineLens)
+    """
+    res = linear_erode(vol, line_steps, line_lens, block_size)
+    return linear_dilate(res, line_steps, line_lens, block_size)
+
+
+def linear_close(vol, line_steps, line_lens, block_size=[256, 256, 512]):
+    """
+    Closing with flat line segment structuring elements.
+
+    Closes volume with a sequence of flat line segments. Line segments are
+    parameterized with a (integer) step vector and a length giving the number
+    of steps. The operations is the same for all line segments.
+
+    The operations are performed using the van Herk/Gil-Werman algorithm
+    [H92]_ [GW93]_.
+
+    Parameters
+    ----------
+    vol
+        Volume to close. Must be convertible to a numpy array of at most 3
+        dimensions.
+    line_steps
+        Step vector or sequence of step vectors. A step vector must have
+        integer coordinates and control the direction of the line segment.
+    line_lens
+        Length or sequence of lengths. Controls the length of the line
+        segments. A length of 0 leaves the volume unchanged.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of closing.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple closing with an 11 x 11 x 11 box structuring element
+        >>> vol = np.ones((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 0  # Small box
+        >>> vol[60:80,60:80,40:60] = 0  # Big box
+        >>> lineSteps = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        >>> lineLens = [11, 11, 11]
+        >>> res = pg.flat.linear_close(vol, lineSteps, lineLens)
+    """
+    res = linear_dilate(vol, line_steps, line_lens, block_size)
+    return linear_erode(res, line_steps, line_lens, block_size)
+
+
+def linear_tophat(vol, line_steps, line_lens, block_size=[256, 256, 512]):
+    """
+    Top-hat transform with flat line segment structuring elements.
+
+    Top-hat transforms volume with a sequence of flat line segments. Line
+    segments are parameterized with a (integer) step vector and a length giving
+    the number of steps. The operations is the same for all line segments.
+
+    The operations are performed using the van Herk/Gil-Werman algorithm
+    [H92]_ [GW93]_.
+
+    Parameters
+    ----------
+    vol
+        Volume to top-hat transform. Must be convertible to a numpy array of at
+        most 3 dimensions.
+    line_steps
+        Step vector or sequence of step vectors. A step vector must have
+        integer coordinates and control the direction of the line segment.
+    line_lens
+        Length or sequence of lengths. Controls the length of the line
+        segments. A length of 0 leaves the volume unchanged.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of top-hat transform.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple top-hat with an 11 x 11 x 11 box structuring element
+        >>> vol = np.ones((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 0  # Small box
+        >>> vol[60:80,60:80,40:60] = 0  # Big box
+        >>> lineSteps = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        >>> lineLens = [11, 11, 11]
+        >>> res = pg.flat.linear_tophat(vol, lineSteps, lineLens)
+    """
+    return vol - linear_open(vol, line_steps, line_lens, block_size)
+
+
+def linear_bothat(vol, line_steps, line_lens, block_size=[256, 256, 512]):
+    """
+    Bot-hat transform with flat line segment structuring elements.
+
+    Bot-hat transforms volume with a sequence of flat line segments. Line
+    segments are parameterized with a (integer) step vector and a length giving
+    the number of steps. The operations is the same for all line segments.
+
+    The operations are performed using the van Herk/Gil-Werman algorithm
+    [H92]_ [GW93]_.
+
+    Parameters
+    ----------
+    vol
+        Volume to bot-hat transform. Must be convertible to a numpy array of at
+        most 3 dimensions.
+    line_steps
+        Step vector or sequence of step vectors. A step vector must have
+        integer coordinates and control the direction of the line segment.
+    line_lens
+        Length or sequence of lengths. Controls the length of the line
+        segments. A length of 0 leaves the volume unchanged.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of bot-hat transform.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple bot-hat with an 11 x 11 x 11 box structuring element
+        >>> vol = np.ones((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 0  # Small box
+        >>> vol[60:80,60:80,40:60] = 0  # Big box
+        >>> lineSteps = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        >>> lineLens = [11, 11, 11]
+        >>> res = pg.flat.linear_tophat(vol, lineSteps, lineLens)
+    """
+    return linear_close(vol, line_steps, line_lens, block_size) - vol

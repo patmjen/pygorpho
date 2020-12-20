@@ -138,3 +138,163 @@ def erode(vol, strel, block_size=[256, 256, 256]):
         >>> res = pg.gen.erode(vol, strel)
     """
     return morph(vol, strel, constants.ERODE, block_size)
+
+
+def open(vol, strel, block_size=[256, 256, 256]):
+    """
+    Opening with general structuring element.
+
+    Parameters
+    ----------
+    vol
+        Volume to open. Must be convertible to numpy array of at most
+        3 dimensions.
+    strel
+        Structuring element. Must be convertible to numpy array of at most 3
+        dimensions.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of opening.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple opening with an 11 x 11 x 11 box structuring element
+        >>> vol = np.zeros((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 1  # Small box
+        >>> vol[60:80,60:80,40:60] = 1  # Big box
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.gen.open(vol, strel)
+    """
+    res = erode(vol, strel, block_size)
+    return dilate(res, strel, block_size)
+
+
+def close(vol, strel, block_size=[256, 256, 256]):
+    """
+    Closing with general structuring element.
+
+    Parameters
+    ----------
+    vol
+        Volume to close. Must be convertible to numpy array of at most
+        3 dimensions.
+    strel
+        Structuring element. Must be convertible to numpy array of at most 3
+        dimensions.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of closing.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple closing with an 11 x 11 x 11 box structuring element
+        >>> vol = np.ones((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 0  # Small box
+        >>> vol[60:80,60:80,40:60] = 0  # Big box
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.gen.close(vol, strel)
+    """
+    res = dilate(vol, strel, block_size)
+    return erode(res, strel, block_size)
+
+
+def tophat(vol, strel, block_size=[256, 256, 256]):
+    """
+    Top-hat transform with general structuring element.
+
+    Also known as a white top-hat transform.
+    It is given by ``tophat(x) = x - open(x)``.
+
+    Parameters
+    ----------
+    vol
+        Volume to top-hat transform. Must be convertible to numpy array of at
+        most 3 dimensions.
+    strel
+        Structuring element. Must be convertible to numpy array of at most 3
+        dimensions.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of the top-hat transform.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple top-hat with an 11 x 11 x 11 box structuring element
+        >>> vol = np.zeros((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 1  # Small box
+        >>> vol[60:80,60:80,40:60] = 1  # Big box
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.gen.tophat(vol, strel)
+    """
+    return vol - open(vol, strel, block_size)
+
+
+def bothat(vol, strel, block_size=[256, 256, 256]):
+    """
+    Bot-hat transform with general structuring element.
+
+    Also known as a black top-hat transform.
+    It is given by ``bothat(x) = close(x) - x``.
+
+    Parameters
+    ----------
+    vol
+        Volume to bot-hat transform. Must be convertible to numpy array of at
+        most 3 dimensions.
+    strel
+        Structuring element. Must be convertible to numpy array of at most 3
+        dimensions.
+    block_size
+        Block size for GPU processing. Volume is sent to the GPU in blocks of
+        this size.
+
+    Returns
+    -------
+    numpy.array
+        Volume of same size as vol with the result of the bot-hat transform.
+
+    Example
+    -------
+    .. code-block:: python
+        :dedent: 4
+
+        >>> import numpy as np
+        >>> import pygorpho as pg
+        >>> # Simple bot-hat with an 11 x 11 x 11 box structuring element
+        >>> vol = np.ones((100, 100, 100))
+        >>> vol[10:15,10:15,48:53] = 0  # Small box
+        >>> vol[60:80,60:80,40:60] = 0  # Big box
+        >>> strel = np.ones((11, 11, 11))
+        >>> res = pg.gen.bothat(vol, strel)
+    """
+    return close(vol, strel, block_size) - vol
