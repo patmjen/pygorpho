@@ -1,29 +1,29 @@
 #!/bin/bash
 
-rm -f dist/* &&
+set -e
 
-module load cuda/9.2 &&
-module load gcc/5.2.0 &&
+PY_MODULE_VERS=("3.5.4" "3.6.2" "3.7.5" "3.8.0")
+PY_VENVS=("py35" "py36" "py37" "py38")
 
-module load python3/3.5.4 &&
-source py35/bin/activate &&
-python setup.py bdist_wheel &&
-deactivate &&
+rm -f dist/* 
 
-module swap python3/3.6.2 &&
-source py36/bin/activate &&
-python setup.py bdist_wheel &&
-deactivate &&
+module load cuda/9.2
+module load gcc/5.2.0
+module load python3 # Load a module so we can use swap after
 
-module swap python3/3.7.5 &&
-source py37/bin/activate &&
-python setup.py bdist_wheel &&
-deactivate &&
+for ((i = 0; i < ${#PY_VENVS[@]}; ++i)); do
+    # Build package
+    module swap python3/${PY_MODULE_VERS[i]}
+    source ${PY_VENVS[i]}/bin/activate
+    python setup.py bdist_wheel
 
-module swap python3/3.8.0 &&
-source py38/bin/activate &&
-python setup.py bdist_wheel &&
-deactivate &&
+    # Install and run tests
+    pip install pygorpho --no-index --find-links=dist/
+    pytest
+    pip uninstall pygorpho --yes
 
-rename linux manylinux1 dist/* &&
+    deactivate 
+done
+
+rename linux manylinux1 dist/*
 python3 -m twine upload dist/*
